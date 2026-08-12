@@ -5,6 +5,7 @@ import fb from '../assets/fb.png';
 import yt from '../assets/yt.png';
 import insta from '../assets/insta.png';
 import mixlr from '../assets/mixlr.png';
+import { dbService } from '../services/db';
 
 export default function Contact() {
   const [name, setName] = useState('');
@@ -13,18 +14,23 @@ export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!name || !email || !message) {
       setError('Please fill in all fields before sending.');
       return;
     }
-    setError('');
-    setIsSubmitted(true);
-    setName('');
-    setEmail('');
-    setMessage('');
-    setTimeout(() => setIsSubmitted(false), 5000);
+    try {
+      setError('');
+      await dbService.submitContactForm(name, email, message);
+      setIsSubmitted(true);
+      setName('');
+      setEmail('');
+      setMessage('');
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch (err: any) {
+      setError(err.message || 'An error occurred while sending your message. Please try again.');
+    }
   };
 
   return (

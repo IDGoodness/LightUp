@@ -1,17 +1,23 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Send } from 'lucide-react';
+import { dbService } from '../services/db';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      setIsSubmitted(true);
-      setEmail('');
-      setTimeout(() => setIsSubmitted(false), 5000);
+      try {
+        await dbService.subscribeNewsletter(email);
+        setIsSubmitted(true);
+        setEmail('');
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } catch (err) {
+        console.error('Subscription error:', err);
+      }
     }
   };
 

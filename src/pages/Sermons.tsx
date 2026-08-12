@@ -1,17 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Play, Search, X, Calendar, Clock } from 'lucide-react';
-import { sermonsData } from '../data/mockData';
 import sermonImg from '../assets/sermonImg.jpg';
+import { dbService } from '../services/db';
+import type { Sermon } from '../data/mockData';
 
 export default function Sermons() {
+  const [sermonsList, setSermonsList] = useState<Sermon[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSermons = async () => {
+      try {
+        const data = await dbService.getSermons();
+        setSermonsList(data);
+      } catch (err) {
+        console.error('Error fetching sermons:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSermons();
+  }, []);
 
   const openVideo = (url: string) => setActiveVideo(url);
   const closeVideo = () => setActiveVideo(null);
 
   // Filter sermons based on search query
-  const filteredSermons = sermonsData.filter(sermon => 
+  const filteredSermons = sermonsList.filter(sermon => 
     sermon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     sermon.speaker.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -64,7 +82,9 @@ export default function Sermons() {
           </div>
 
           {/* Grid display */}
-          {filteredSermons.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-16 text-text-dimmed">Loading sermons...</div>
+          ) : filteredSermons.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-16">
               {filteredSermons.map((sermon) => (
                 <div

@@ -7,6 +7,7 @@ import Sermons from './pages/Sermons';
 import Gallery from './pages/Gallery';
 import Partner from './pages/Partner';
 import Contact from './pages/Contact';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           {/* Fallback route */}
           <Route path="*" element={<Home />} />
         </Route>
+        <Route path="admin" element={<Admin />} />
       </Routes>
     </Router>
   );
