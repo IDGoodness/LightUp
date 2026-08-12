@@ -421,12 +421,21 @@ export const dbService = {
   // --- CONTACT SUBMISSIONS ---
   async getContactSubmissions(): Promise<ContactSubmission[]> {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data || [];
+      try {
+        const { data, error } = await supabase
+          .from('contact_submissions')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) {
+          console.warn('Supabase fetch error, fallback to localStorage', error);
+          const list = localStorage.getItem(KEYS.CONTACTS);
+          return list ? JSON.parse(list) : [];
+        }
+        return data || [];
+      } catch (e) {
+        const list = localStorage.getItem(KEYS.CONTACTS);
+        return list ? JSON.parse(list) : [];
+      }
     } else {
       const submissions = localStorage.getItem(KEYS.CONTACTS);
       return submissions ? JSON.parse(submissions) : [];
@@ -442,12 +451,26 @@ export const dbService = {
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .insert([{ name, email, message }])
-        .select();
-      if (error) throw error;
-      return data[0];
+      try {
+        const { data, error } = await supabase
+          .from('contact_submissions')
+          .insert([{ name, email, message }])
+          .select();
+        if (error) {
+          console.warn('Supabase insert error,, fallback to localStorage', error);
+          const list = JSON.parse(localStorage.getItem(KEYS.CONTACTS) || '[]');
+          list.unshift(submission);
+          localStorage.setItem(KEYS.CONTACTS, JSON.stringify(list));
+          return submission;
+        }
+        return data[0];
+      } catch (e) {
+        console.warn('Supabase insert error, fallback to localStorage', e);
+        const list = JSON.parse(localStorage.getItem(KEYS.CONTACTS) || '[]');
+        list.unshift(submission);
+        localStorage.setItem(KEYS.CONTACTS, JSON.stringify(list));
+        return submission;
+      }
     } else {
       const submissions = await this.getContactSubmissions();
       submissions.unshift(submission);
@@ -459,15 +482,24 @@ export const dbService = {
   // --- NEWSLETTER SUBSCRIBERS ---
   async getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('newsletter_subscribers')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data || [];
+      try {
+        const { data, error } = await supabase
+          .from('newsletter_subscribers')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) {
+          console.warn('Supabase fetch error, fallback to localStorage', error);
+          const list = localStorage.getItem(KEYS.NEWSLETTER);
+          return list ? JSON.parse(list) : [];
+        }
+        return data || [];
+      } catch (e) {
+        const list = localStorage.getItem(KEYS.NEWSLETTER);
+        return list ? JSON.parse(list) : [];
+      }
     } else {
-      const subs = localStorage.getItem(KEYS.NEWSLETTER);
-      return subs ? JSON.parse(subs) : [];
+      const algorithm = localStorage.getItem(KEYS.NEWSLETTER);
+      return algorithm ? JSON.parse(algorithm) : [];
     }
   },
 
@@ -478,12 +510,30 @@ export const dbService = {
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('newsletter_subscribers')
-        .insert([{ email }])
-        .select();
-      if (error) throw error;
-      return data[0];
+      try {
+        const { data, error } = await supabase
+          .from('newsletter_subscribers')
+          .insert([{ email }])
+          .select();
+        if (error) {
+          console.warn('Supabase insert error, fallback to localStorage', error);
+          const list: NewsletterSubscriber[] = JSON.parse(localStorage.getItem(KEYS.NEWSLETTER) || '[]');
+          const exists = list.find(s => s.email.toLowerCase() === email.toLowerCase());
+          if (exists) return exists;
+          list.unshift(subscriber);
+          localStorage.setItem(KEYS.NEWSLETTER, JSON.stringify(list));
+          return subscriber;
+        }
+        return data[0];
+      } catch (e) {
+        console.warn('Supabase insert error, fallback to localStorage', e);
+        const list: NewsletterSubscriber[] = JSON.parse(localStorage.getItem(KEYS.NEWSLETTER) || '[]');
+        const exists = list.find(s => s.email.toLowerCase() === email.toLowerCase());
+        if (exists) return exists;
+        list.unshift(subscriber);
+        localStorage.setItem(KEYS.NEWSLETTER, JSON.stringify(list));
+        return subscriber;
+      }
     } else {
       const subs = await this.getNewsletterSubscribers();
       const exists = subs.find(s => s.email.toLowerCase() === email.toLowerCase());
