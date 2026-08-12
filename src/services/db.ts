@@ -2,16 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 import { upcomingEventsData, pastEventsData, sermonsData, galleryData } from '../data/mockData';
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/mockData';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = "https://gahpkckwjxdetfugdyos.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhaHBrY2t3anhkZXRmdWdkeW9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDI0MjYsImV4cCI6MjEwMjExODQyNn0.ObXLJ3dppHI9XOkIqd6vWKv-7P_HRHUMDAuWTIQyQlI";
 
 // Check if credentials exist
-const isSupabaseConfigured = !!(
-  supabaseUrl && 
-  supabaseAnonKey && 
-  supabaseUrl !== 'YOUR_SUPABASE_URL' && 
-  supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY'
-);
+const isSupabaseConfigured = true;
 
 export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
