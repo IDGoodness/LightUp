@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Mail, LogOut, Plus, Trash2, Edit2, Users, FileText, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Mail, LogOut, Plus, Trash2, Edit2, Users, FileText } from 'lucide-react';
 import { dbService } from '../services/db';
 import type { ContactSubmission, NewsletterSubscriber, EventRegistration } from '../services/db';
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/mockData';
