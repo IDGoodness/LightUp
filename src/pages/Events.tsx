@@ -194,7 +194,7 @@ export default function Events() {
                       alt={event.title}
                       className="w-full h-full object-cover grayscale-[30%]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent to-card-dark-lighter"></div>
+                    {/* <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent to-card-dark-lighter"></div> */}
                   </div>
                   <div className="p-6 md:p-8 flex flex-col md:flex-row flex-1 justify-between items-start md:items-center gap-6 md:gap-8">
                     <div className="max-w-[500px]">
@@ -212,14 +212,14 @@ export default function Events() {
                       </div>
                     </div>
                     <div className="flex gap-3 w-full md:w-[150px] shrink-0 justify-center">
-                      <button
-                        onClick={() =>
-                          openVideo("https://www.youtube.com/embed/dQw4w9WgXcQ")
-                        }
-                        className={`${btnSecondaryClass} w-full flex gap-2 border-white/20`}
-                      >
-                        <Play size={14} fill="currentColor" /> View highlights
-                      </button>
+                      {event.videoUrl && (
+                        <button
+                          onClick={() => openVideo(event.videoUrl!)}
+                          className={`${btnSecondaryClass} w-full flex gap-2 border-white/20`}
+                        >
+                          <Play size={14} fill="currentColor" /> View highlights
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

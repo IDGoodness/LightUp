@@ -143,7 +143,8 @@ export const dbService = {
         location: e.location,
         image: e.image,
         isUpcoming: e.is_upcoming,
-        monthYear: e.month_year
+        monthYear: e.month_year,
+        videoUrl: e.video_url
       }));
     } else {
       const events = localStorage.getItem(KEYS.EVENTS);
@@ -164,7 +165,8 @@ export const dbService = {
           location: event.location,
           image: event.image,
           is_upcoming: event.isUpcoming,
-          month_year: event.monthYear
+          month_year: event.monthYear,
+          video_url: event.videoUrl || null
         }])
         .select();
       if (error) throw error;
@@ -177,7 +179,8 @@ export const dbService = {
         location: data[0].location,
         image: data[0].image,
         isUpcoming: data[0].is_upcoming,
-        monthYear: data[0].month_year
+        monthYear: data[0].month_year,
+        videoUrl: data[0].video_url
       };
     } else {
       const events = await this.getEvents();
@@ -198,6 +201,7 @@ export const dbService = {
       if (event.image !== undefined) updateData.image = event.image;
       if (event.isUpcoming !== undefined) updateData.is_upcoming = event.isUpcoming;
       if (event.monthYear !== undefined) updateData.month_year = event.monthYear;
+      if (event.videoUrl !== undefined && event.videoUrl !== '') updateData.video_url = event.videoUrl;
 
       const { error } = await supabase
         .from('events')

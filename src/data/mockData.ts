@@ -27,6 +27,7 @@ export interface ChurchEvent {
   location: string;
   image: string;
   isUpcoming: boolean;
+  videoUrl?: string;  // optional YouTube highlights embed URL for past events
   status?: 'attend' | 'registered' | 'ended';
 }
 

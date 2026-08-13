@@ -37,7 +37,6 @@ export default function Gallery() {
       <section className="py-24 bg-bg-dark -mt-8 relative z-10">
         <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8">
           <div className="text-center max-w-[700px] mx-auto mb-10 animate-fade-in">
-            <span className="font-heading font-bold text-[0.9rem] uppercase tracking-[0.15em] text-primary">MEMORIES</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-white mt-2 mb-4 leading-tight">Moments That Inspire</h2>
             <p className="text-text-dimmed">A visual record of our worship services, global conferences, and community outposts.</p>
           </div>
