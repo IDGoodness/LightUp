@@ -1,6 +1,6 @@
 import { Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ministriesData } from '../data/mockData';
+import { ministriesData } from '../data/ministryData';
 import aboutImg from '../assets/about.png';
 import targetImg from '../assets/target.png';
 import eyeImg from '../assets/eye.png';
@@ -22,23 +22,11 @@ export default function About() {
           <h1 className="text-white mb-6 font-heading font-extrabold text-[2.5rem] sm:text-[3.5rem] md:text-[4rem] leading-tight">
             WHO ARE WE?
           </h1>
-          <p className="max-w-[800px] mx-auto text-[1rem] text-text-dimmed leading-relaxed">
-            A Christ-centered ministry dedicated to raising believers through
-            prayer, biblical teaching, mentorship and impactful gatherings that
-            inspire lives and strengthen faith. A Christ-centered ministry
-            dedicated to raising believers through prayer, biblical teaching,
-            mentorship and impactful gatherings that inspire lives and
-            strengthen faith. A Christ-centered ministry dedicated to raising
-            believers through prayer, biblical teaching, mentorship and
-            impactful gatherings that inspire lives and strengthen faith. A
-            Christ-centered ministry dedicated to raising believers through
-            prayer, biblical teaching, mentorship and impactful gatherings that
-            inspire lives and strengthen faith. A Christ-centered ministry
-            dedicated to raising believers through prayer, biblical teaching,
-            mentorship and impactful gatherings that inspire lives and
-            strengthen faith. A Christ-centered ministry dedicated to raising
-            believers through prayer, biblical teaching, mentorship and
-            impactful gatherings that inspire lives and strengthen faith.
+          <p className="max-w-[800px] mx-auto text-[1.05rem] text-text-dimmed leading-relaxed">
+            LightUp International Christian Network is a Christ-centered ministry
+            dedicated to awakening hearts, breaking spiritual darkness, and raising
+            a generation of kingdom ambassadors through vibrant prayer, in-depth biblical
+            teaching, intentional mentorship, and impactful gatherings worldwide.
           </p>
         </div>
       </header>

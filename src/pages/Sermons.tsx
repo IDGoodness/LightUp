@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Play, Search, X, Calendar, Clock } from 'lucide-react';
 import sermonImg from '../assets/sermonImg.jpg';
 import { dbService } from '../services/db';
-import type { Sermon } from '../data/mockData';
+import type { Sermon } from '../data/churchData';
 
 export default function Sermons() {
   const [sermonsList, setSermonsList] = useState<Sermon[]>([]);

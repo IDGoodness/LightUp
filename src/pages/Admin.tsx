@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { dbService } from '../services/db';
 import type { ContactSubmission, NewsletterSubscriber, EventRegistration } from '../services/db';
-import type { Sermon, ChurchEvent, GalleryItem } from '../data/mockData';
+import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import homepageImg from '../assets/homepage.jpg';
 import logo from '../assets/logo.png';
 

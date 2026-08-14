@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, Calendar, MapPin, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { ministriesData, sermonsData, galleryData, upcomingEventsData } from '../data/mockData';
+import { ArrowRight, Play, Calendar, Clock, MapPin, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ministriesData } from '../data/ministryData';
+import { dbService } from '../services/db';
+import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import Newsletter from '../components/Newsletter';
 import homepageImg from '../assets/homepage.jpg';
 import banner from '../assets/banner.png';
@@ -11,16 +13,49 @@ import heroMentoring from '../assets/hero_mentoring.jpg';
 import Img1 from '../assets/Img1.jpg';
 import Img2 from '../assets/Img2.jpg';
 
-
 export default function Home() {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [sermonsList, setSermonsList] = useState<Sermon[]>([]);
+  const [eventsList, setEventsList] = useState<ChurchEvent[]>([]);
+  const [galleryList, setGalleryList] = useState<GalleryItem[]>([]);
+  const [loadingSermons, setLoadingSermons] = useState(true);
+
+  useEffect(() => {
+    const fetchSermons = async () => {
+      try {
+        const data = await dbService.getSermons();
+        setSermonsList(data);
+      } catch (err) {
+        console.error('Error fetching sermons in Home:', err);
+      } finally {
+        setLoadingSermons(false);
+      }
+    };
+
+    const fetchOtherData = async () => {
+      try {
+        const [fetchedEvents, fetchedGallery] = await Promise.all([
+          dbService.getUpcomingEvents(),
+          dbService.getGalleryItems()
+        ]);
+        if (fetchedEvents) setEventsList(fetchedEvents);
+        if (fetchedGallery) setGalleryList(fetchedGallery);
+      } catch (err) {
+        console.error('Error loading events/gallery in Home:', err);
+      }
+    };
+
+    fetchSermons();
+    fetchOtherData();
+  }, []);
 
   const openVideo = (url: string) => setActiveVideo(url);
   const closeVideo = () => setActiveVideo(null);
 
-  // Take first 3 ministries and 3 sermons
+  // Take first 3 ministries and up to 3 sermons
   const featuredMinistries = ministriesData.slice(0, 3);
-  const featuredSermons = sermonsData.slice(0, 3);
+  const featuredSermons = sermonsList.slice(0, 3);
+  const nextUpcomingEvent = eventsList[0] || null;
 
   // Gallery slider states
   const [galleryIndex, setGalleryIndex] = useState(0);
@@ -42,7 +77,7 @@ export default function Home() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  const maxGalleryIndex = Math.max(0, galleryData.length - itemsPerPage);
+  const maxGalleryIndex = Math.max(0, galleryList.length - itemsPerPage);
 
   const handleNextGallery = useCallback(() => {
     setGalleryIndex((prev) => (prev >= maxGalleryIndex ? 0 : prev + 1));
@@ -252,32 +287,31 @@ export default function Home() {
           </p>
 
           {/* Display one event teaser */}
-          {upcomingEventsData.length > 0 && (
+          {nextUpcomingEvent && (
             <div className="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden border border-primary/20 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_10px_30px_rgba(0,0,0,0.4)] text-left mx-auto mb-12 max-w-[750px]">
               <div className="w-full md:w-[220px] h-[200px] md:h-auto relative shrink-0">
                 <img
-                  src={upcomingEventsData[0].image}
-                  alt={upcomingEventsData[0].title}
+                  src={nextUpcomingEvent.image}
+                  alt={nextUpcomingEvent.title}
                   className="w-full h-full object-cover"
                 />
-                {/* <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent to-white"></div> */}
               </div>
               <div className="p-6 md:p-8 flex flex-col md:flex-row flex-1 justify-between items-start md:items-center gap-6">
                 <div>
                   <div className="font-heading font-bold text-[0.9rem] text-primary mb-2 flex gap-4">
                     <span className="flex items-center gap-1">
-                      <Calendar size={14} /> {upcomingEventsData[0].date}
+                      <Calendar size={14} /> {nextUpcomingEvent.date}
                     </span>
-                    <span>{upcomingEventsData[0].time}</span>
+                    <span>{nextUpcomingEvent.time}</span>
                   </div>
                   <h3 className="text-xl font-heading font-bold text-text-dark mb-2">
-                    {upcomingEventsData[0].title}
+                    {nextUpcomingEvent.title}
                   </h3>
                   <p className="text-text-muted text-[0.95rem] mb-4">
-                    {upcomingEventsData[0].description}
+                    {nextUpcomingEvent.description}
                   </p>
                   <div className="flex items-center gap-2 text-text-muted text-[0.9rem]">
-                    <MapPin size={12} /> {upcomingEventsData[0].location}
+                    <MapPin size={12} /> {nextUpcomingEvent.location}
                   </div>
                 </div>
                 <div className="flex gap-3 w-full md:w-auto shrink-0">
@@ -314,39 +348,49 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-16">
-            {featuredSermons.map((sermon) => (
-              <div
-                className="bg-bg-black rounded-lg overflow-hidden relative cursor-pointer shadow-[0_5px_15px_rgba(0,0,0,0.4)] border border-white/5 h-[250px] group"
-                key={sermon.id}
-                onClick={() => openVideo(sermon.videoUrl)}
-              >
-                <img
-                  src={sermon.thumbnail}
-                  alt={sermon.title}
-                  className="w-full h-full object-cover opacity-65 transition-all duration-300 group-hover:opacity-85 group-hover:scale-103"
-                />
-                <div className="absolute inset-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end h-full">
-                  <h3 className="text-[1.2rem] font-bold text-text-white mb-1">
-                    {sermon.title}
-                  </h3>
-                  <span className="text-[0.85rem] text-white mb-3">
-                    by {sermon.speaker}
-                  </span>
-                  <div className="flex justify-between items-center border-t border-white/15 pt-3">
-                    <div className="flex gap-4 text-[0.8rem] text-text-dimmed">
-                      <span>{sermon.date}</span>
-                      <span>•</span>
-                      <span>{sermon.duration}</span>
-                    </div>
-                    <span className="text-[0.85rem] font-bold text-primary flex items-center gap-1 group-hover:text-text-white transition-colors duration-150">
-                      <Play size={12} fill="currentColor" /> WATCH
+          {loadingSermons ? (
+            <div className="text-center py-16 text-text-dimmed">Loading sermons...</div>
+          ) : featuredSermons.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-16">
+              {featuredSermons.map((sermon) => (
+                <div
+                  className="bg-bg-black rounded-lg overflow-hidden relative cursor-pointer shadow-[0_5px_15px_rgba(0,0,0,0.4)] border border-white/5 h-[250px] group animate-fade-in"
+                  key={sermon.id}
+                  onClick={() => openVideo(sermon.videoUrl)}
+                >
+                  <img
+                    src={sermon.thumbnail}
+                    alt={sermon.title}
+                    className="w-full h-full object-cover opacity-65 transition-all duration-300 group-hover:opacity-85 group-hover:scale-103"
+                  />
+                  <div className="absolute inset-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end h-full">
+                    <h3 className="text-[1.2rem] font-bold text-text-white mb-1">
+                      {sermon.title}
+                    </h3>
+                    <span className="text-[0.85rem] text-accent-orange mb-3">
+                      by {sermon.speaker}
                     </span>
+                    <div className="flex justify-between items-center border-t border-white/15 pt-3">
+                      <div className="flex gap-4 text-[0.8rem] text-text-dimmed">
+                        <span className="flex items-center gap-1">
+                          <Calendar size={12} /> {sermon.date}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Clock size={12} /> {sermon.duration}
+                        </span>
+                      </div>
+                      <span className="text-[0.85rem] font-bold text-primary flex items-center gap-1 group-hover:text-text-white transition-colors duration-150">
+                        <Play size={12} fill="currentColor" /> WATCH
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 text-text-dimmed">No sermons available at this time.</div>
+          )}
 
           <div className="text-center mt-16">
             <Link to="/sermons" className={btnPrimaryClass}>
@@ -401,7 +445,7 @@ export default function Home() {
                 className="flex -mx-3 transition-transform duration-500 ease-out"
                 style={{ transform: `translateX(-${galleryIndex * (100 / itemsPerPage)}%)` }}
               >
-                {galleryData.map((item) => (
+                {galleryList.map((item) => (
                   <div 
                     className="px-3 w-full sm:w-1/2 lg:w-1/4 shrink-0" 
                     key={item.id}

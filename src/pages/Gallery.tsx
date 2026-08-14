@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, ZoomIn, Download } from 'lucide-react';
 import { dbService } from '../services/db';
-import type { GalleryItem } from '../data/mockData';
+import type { GalleryItem } from '../data/churchData';
 import Img3 from '../assets/Img3.jpg';
 
 export default function Gallery() {

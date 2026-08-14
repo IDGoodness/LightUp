@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
-import { upcomingEventsData, pastEventsData, sermonsData, galleryData } from '../data/mockData';
-import type { Sermon, ChurchEvent, GalleryItem } from '../data/mockData';
+import { upcomingEventsData, pastEventsData, sermonsData, galleryData } from '../data/churchData';
+import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
+import homepageImg from '../assets/homepage.jpg';
+import sermonImg from '../assets/sermonImg.jpg';
 
 const supabaseUrl = "https://gahpkckwjxdetfugdyos.supabase.co";
 const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhaHBrY2t3anhkZXRmdWdkeW9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDI0MjYsImV4cCI6MjEwMjExODQyNn0.ObXLJ3dppHI9XOkIqd6vWKv-7P_HRHUMDAuWTIQyQlI";
@@ -46,23 +48,29 @@ const KEYS = {
   ADMIN_AUTH: 'lightup_admin_auth',
 };
 
-// Initialize LocalStorage with mockData if empty
+// Initialize LocalStorage with real churchData if empty or holding outdated placeholders
 const initLocalStorage = () => {
   if (typeof window === 'undefined') return;
 
-  if (!localStorage.getItem(KEYS.EVENTS)) {
+  const storedEvents = localStorage.getItem(KEYS.EVENTS);
+  if (!storedEvents || storedEvents === '[]' || storedEvents.includes('Prayer Office')) {
     const allEvents = [
       ...upcomingEventsData.map(e => ({ ...e })),
       ...pastEventsData.map(e => ({ ...e }))
     ];
     localStorage.setItem(KEYS.EVENTS, JSON.stringify(allEvents));
   }
-  if (!localStorage.getItem(KEYS.SERMONS)) {
+
+  const storedSermons = localStorage.getItem(KEYS.SERMONS);
+  if (!storedSermons || storedSermons === '[]' || storedSermons.includes('Building your life by the Word') || storedSermons.includes('Walking in the Light')) {
     localStorage.setItem(KEYS.SERMONS, JSON.stringify(sermonsData));
   }
-  if (!localStorage.getItem(KEYS.GALLERY)) {
+
+  const storedGallery = localStorage.getItem(KEYS.GALLERY);
+  if (!storedGallery || storedGallery === '[]' || !storedGallery.includes('arise-')) {
     localStorage.setItem(KEYS.GALLERY, JSON.stringify(galleryData));
   }
+
   if (!localStorage.getItem(KEYS.CONTACTS)) {
     localStorage.setItem(KEYS.CONTACTS, JSON.stringify([]));
   }
@@ -129,27 +137,32 @@ export const dbService = {
   // --- EVENTS ---
   async getEvents(): Promise<ChurchEvent[]> {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return (data || []).map(e => ({
-        id: e.id,
-        title: e.title,
-        date: e.date,
-        time: e.time,
-        description: e.description,
-        location: e.location,
-        image: e.image,
-        isUpcoming: e.is_upcoming,
-        monthYear: e.month_year,
-        videoUrl: e.video_url
-      }));
-    } else {
-      const events = localStorage.getItem(KEYS.EVENTS);
-      return events ? JSON.parse(events) : [];
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          return data.map(e => ({
+            id: e.id,
+            title: e.title,
+            date: e.date,
+            time: e.time,
+            description: e.description,
+            location: e.location,
+            image: e.image,
+            isUpcoming: e.is_upcoming,
+            monthYear: e.month_year,
+            videoUrl: e.video_url
+          }));
+        }
+      } catch (err) {
+        console.error('Error fetching events from Supabase:', err);
+      }
     }
+    const events = localStorage.getItem(KEYS.EVENTS);
+    const parsed = events ? JSON.parse(events) : [];
+    return parsed.length > 0 ? parsed : [...upcomingEventsData, ...pastEventsData];
   },
 
   async createEvent(event: Omit<ChurchEvent, 'id'>): Promise<ChurchEvent> {
@@ -274,24 +287,37 @@ export const dbService = {
   // --- SERMONS ---
   async getSermons(): Promise<Sermon[]> {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('sermons')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return (data || []).map(s => ({
-        id: s.id,
-        title: s.title,
-        speaker: s.speaker,
-        date: s.date,
-        duration: s.duration,
-        thumbnail: s.thumbnail,
-        videoUrl: s.video_url
-      }));
-    } else {
-      const sermons = localStorage.getItem(KEYS.SERMONS);
-      return sermons ? JSON.parse(sermons) : [];
+      try {
+        const { data, error } = await supabase
+          .from('sermons')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          return data.map(s => {
+            let thumb = s.thumbnail;
+            if (!thumb || thumb.includes('homepage.jpg')) {
+              thumb = homepageImg;
+            } else if (thumb.includes('sermonImg.jpg') || thumb.includes('sermon.jpg')) {
+              thumb = sermonImg;
+            }
+            return {
+              id: s.id,
+              title: s.title,
+              speaker: s.speaker,
+              date: s.date,
+              duration: s.duration,
+              thumbnail: thumb,
+              videoUrl: s.video_url
+            };
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching sermons from Supabase:', err);
+      }
     }
+    const sermons = localStorage.getItem(KEYS.SERMONS);
+    const parsed = sermons ? JSON.parse(sermons) : [];
+    return parsed.length > 0 ? parsed : sermonsData;
   },
 
   async createSermon(sermon: Omit<Sermon, 'id'>): Promise<Sermon> {

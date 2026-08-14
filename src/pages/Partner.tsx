@@ -52,6 +52,11 @@ export default function Partner() {
               <p className="text-[0.9rem] sm:text-[0.95rem] text-text-dimmed leading-relaxed max-w-[750px]">
                 Support the ministry through generous giving that helps fund outreach programs, conferences, discipleship initiatives, and ministry operations.
               </p>
+              <p className='text-text-dimmed mt-4 text-[0.9rem] sm:text-[0.95rem] leading-relaxed max-w-[750px]'>
+                <strong>Account Number:</strong> 2048882208 <br />
+                <strong>Account Name:</strong> Lightup international Christian Network <br />
+                <strong>Bank:</strong> First Bank
+              </p>
             </div>
 
             {/* Divider line 2 */}
