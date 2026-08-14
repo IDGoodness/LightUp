@@ -202,7 +202,7 @@ export default function Events() {
                               openRegModal(event);
                             }
                           }}
-                          className={`${isRegistered ? 'bg-green-600/20 text-green-400 border border-green-500/40 hover:bg-green-600/30' : btnPrimaryClass} w-full`}
+                          className={`${isRegistered ? 'bg-green-600/20 text-green-400 rounded-full p-3 border border-green-500/40 hover:bg-green-600/30' : btnPrimaryClass} w-full`}
                         >
                           {isRegistered ? (
                             <span className="flex items-center justify-center gap-1.5 font-bold text-xs">
