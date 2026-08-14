@@ -28,7 +28,7 @@ export default function Partner() {
         <div className="w-full max-w-[850px] mx-auto px-6 md:px-8 text-center animate-fade-in">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-dark mt-2 mb-6 leading-tight">WHY PARTNER WITH US?</h2>
           <p className="text-text-muted text-[1rem] leading-relaxed">
-            When you partner with Light-Up International Christian Network, you become part of a mission that extends beyond a single event or gathering. You support structural courses to reach more people, strengthen believers through sound teaching, organize impactful conferences, and carry the message of hope to communities near and far. Whether through financial giving, prayer, volunteering, or sharing our mission, every act of partnership contributes directly to the spiritual harvest and lives entrusted to us.
+            When you partner with LightUp International Christian Network, you become part of a mission that extends beyond a single event or gathering. You support structural courses to reach more people, strengthen believers through sound teaching, organize impactful conferences, and carry the message of hope to communities near and far. Whether through financial giving, prayer, volunteering, or sharing our mission, every act of partnership contributes directly to the spiritual harvest and lives entrusted to us.
           </p>
         </div>
       </section>

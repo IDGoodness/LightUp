@@ -45,7 +45,7 @@ export default function Sermons() {
         <div className="relative z-20 max-w-[850px] animate-fade-in">
           <h1 className="text-white mb-6 font-heading font-extrabold text-[2.5rem] sm:text-[2rem] md:text-[3rem] leading-tight">
             MESSAGES THAT{" "}
-            <span className="text-gradient-orange">INSPIRES FAITH</span>
+            <span className="text-gradient-orange">INSPIRE FAITH</span>
           </h1>
           <p className="max-w-[750px] mx-auto text-[1.1rem] text-text-dimmed leading-relaxed">
             Every message shared at Light Up International Christian Network is

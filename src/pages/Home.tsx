@@ -8,6 +8,8 @@ import banner from '../assets/banner.png';
 import heroWorship from '../assets/hero_worship.jpg';
 import heroPreacher from '../assets/hero_preacher.jpg';
 import heroMentoring from '../assets/hero_mentoring.jpg';
+import Img1 from '../assets/Img1.jpg';
+import Img2 from '../assets/Img2.jpg';
 
 
 export default function Home() {
@@ -138,14 +140,14 @@ export default function Home() {
           <div className="grid grid-cols-12 relative h-[500px] w-full">
             <div className="col-start-1 col-end-9 row-start-1 z-10 rounded-lg overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.15)] w-[250px] md:w-[300px] h-[400px]">
               <img
-                src={homepageImg}
+                src={Img1}
                 alt="Worshippers gathering"
                 className="w-full h-full object-cover transition-all duration-300 hover:scale-105"
               />
             </div>
             <div className="col-start-5 col-end-13 row-start-1 mt-[100px] z-20 rounded-lg overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] w-[250px] md:w-[300px] h-[400px]">
               <img
-                src={homepageImg}
+                src={Img2}
                 alt="Ambassadors learning"
                 style={{ filter: "hue-rotate(25deg)" }}
                 className="w-full h-full object-cover transition-all duration-300 hover:scale-105"
@@ -157,7 +159,7 @@ export default function Home() {
               ABOUT US
             </h2>
             <p className="text-text-muted text-[1.05rem] leading-relaxed">
-              Light-Up International Christian Network is a mission-driven,
+              LightUp International Christian Network is a mission-driven,
               spirit-led community dedicated to raising ambassadors for God's
               Kingdom. Through solid biblical teachings, active discipleship,
               and fellowship, we empower believers to discover their calling and

@@ -42,9 +42,9 @@ export default function Contact() {
             WE’D LOVE TO HEAR FROM YOU
           </h1>
           <p className="max-w-[700px] mx-auto text-sm sm:text-[0.95rem] text-text-dimmed leading-relaxed">
-            Whether you have a question, need prayer, want to learn more about our
-            ministry, or simply wish to connect, we're here for you. Reach out to us—we'd
-            be delighted to hear from you.
+            Whether you have a question, need prayer, want to learn more about
+            our ministry, or simply wish to connect, we're here for you. Reach
+            out to us—we'd be delighted to hear from you.
           </p>
         </div>
       </header>
@@ -53,7 +53,6 @@ export default function Contact() {
       <section className="relative z-10 px-6">
         <div className="w-full max-w-[1100px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
-            
             {/* Left Card: Get In Touch Details */}
             <div className="bg-text-white text-text-dark rounded-2xl p-8 md:p-12 shadow-xl flex flex-col justify-between h-full gap-12">
               <div>
@@ -61,7 +60,8 @@ export default function Contact() {
                   Get in touch
                 </h3>
                 <p className="text-text-muted mb-10 leading-relaxed text-[0.95rem]">
-                  Whether you have an inquiry, need prayer, or want to learn more about our ministry, we'd love to hear from you.
+                  Whether you have an inquiry, need prayer, or want to learn
+                  more about our ministry, we'd love to hear from you.
                 </p>
 
                 <div className="flex flex-col gap-6">
@@ -70,46 +70,92 @@ export default function Contact() {
                     <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-lg text-white shrink-0">
                       <Mail size={18} />
                     </div>
-                    <a href="mailto:info@lightupinternationalchristiannetwork.org" className="text-text-dark font-medium break-all hover:text-primary transition-colors">
-                      info@lightupinternationalchristiannetwork.org
+                    <a
+                      href="mailto:info@lightupinternationalchristiannetwork.org"
+                      className="text-text-dark font-medium break-all hover:text-primary transition-colors"
+                    >
+                      lightupintl111@gmail.com
                     </a>
                   </div>
 
                   {/* Phone */}
-                  <div className="flex items-center gap-4 text-[0.95rem] sm:text-[1rem]">
+                  {/* <div className="flex items-center gap-4 text-[0.95rem] sm:text-[1rem]">
                     <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-lg text-white shrink-0">
                       <Phone size={18} />
                     </div>
-                    <a href="tel:+2348000000000" className="text-text-dark font-medium hover:text-primary transition-colors">
+                    <a
+                      href="tel:+2348000000000"
+                      className="text-text-dark font-medium hover:text-primary transition-colors"
+                    >
                       +234 XXX XXX XXXX
                     </a>
-                  </div>
+                  </div> */}
 
                   {/* Address */}
-                  <div className="flex items-center gap-4 text-[0.95rem] sm:text-[1rem]">
+                  {/* <div className="flex items-center gap-4 text-[0.95rem] sm:text-[1rem]">
                     <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-lg text-white shrink-0">
                       <Home size={18} />
                     </div>
                     <span className="text-text-dark font-medium leading-normal">
                       47, Randu Avenue Close, Lagos, Nigeria.
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
               {/* Social links row */}
               <div className="flex items-center gap-6 pt-4 border-t border-black/5 md:border-t-0 md:pt-0">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105" aria-label="Facebook">
-                  <img src={fb} alt="Facebook" className="h-5 w-5 object-contain" />
+                {/* <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-transform hover:scale-105"
+                  aria-label="Facebook"
+                >
+                  <img
+                    src={fb}
+                    alt="Facebook"
+                    className="h-5 w-5 object-contain"
+                  />
+                </a> */}
+                <a
+                  href="https://www.instagram.com/lightupinternational?igsh=c29laHRjOXhvMTd6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-transform hover:scale-105"
+                  aria-label="Instagram"
+                >
+                  <img
+                    src={insta}
+                    alt="Instagram"
+                    className="h-5 w-5 object-contain"
+                  />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105" aria-label="Instagram">
-                  <img src={insta} alt="Instagram" className="h-5 w-5 object-contain" />
+                <a
+                  href="https://www.youtube.com/@Julianah_Ajadi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-transform hover:scale-105"
+                  aria-label="YouTube"
+                >
+                  <img
+                    src={yt}
+                    alt="YouTube"
+                    className="h-5 w-5 object-contain"
+                  />
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105" aria-label="YouTube">
-                  <img src={yt} alt="YouTube" className="h-5 w-5 object-contain" />
-                </a>
-                <a href="https://mixlr.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-transform hover:scale-105" aria-label="Mixlr">
-                  <img src={mixlr} alt="Mixlr" className="h-5 w-auto object-contain" />
+                <a
+                  href="lightupprayermeeting1.mixlr.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 transition-transform hover:scale-105"
+                  aria-label="Mixlr"
+                >
+                  <img
+                    src={mixlr}
+                    alt="Mixlr"
+                    className="h-5 w-auto object-contain"
+                  />
                 </a>
               </div>
             </div>
@@ -118,10 +164,16 @@ export default function Contact() {
             <div className="bg-text-white text-text-dark rounded-2xl p-8 md:p-12 shadow-xl">
               {isSubmitted ? (
                 <div className="text-center py-16 text-text-dark flex flex-col items-center justify-center h-full">
-                  <CheckCircle size={56} className="text-primary mb-6 animate-bounce" />
-                  <h3 className="text-2xl font-heading font-bold text-text-dark mb-2">Message Sent Successfully!</h3>
+                  <CheckCircle
+                    size={56}
+                    className="text-primary mb-6 animate-bounce"
+                  />
+                  <h3 className="text-2xl font-heading font-bold text-text-dark mb-2">
+                    Message Sent Successfully!
+                  </h3>
                   <p className="text-text-muted max-w-[320px] mx-auto text-sm leading-relaxed">
-                    Thank you for reaching out. A representative from our network administration office will contact you soon.
+                    Thank you for reaching out. A representative from our
+                    network administration office will contact you soon.
                   </p>
                 </div>
               ) : (
@@ -135,12 +187,17 @@ export default function Contact() {
                         {error}
                       </div>
                     )}
-                    
+
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="contact-name" className="text-xs font-semibold text-text-muted">Your Full Name</label>
-                      <input 
-                        type="text" 
-                        id="contact-name" 
+                      <label
+                        htmlFor="contact-name"
+                        className="text-xs font-semibold text-text-muted"
+                      >
+                        Your Full Name
+                      </label>
+                      <input
+                        type="text"
+                        id="contact-name"
                         placeholder="Enter your full name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -150,10 +207,15 @@ export default function Contact() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="contact-email" className="text-xs font-semibold text-text-muted">Your Email Address</label>
-                      <input 
-                        type="email" 
-                        id="contact-email" 
+                      <label
+                        htmlFor="contact-email"
+                        className="text-xs font-semibold text-text-muted"
+                      >
+                        Your Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="contact-email"
                         placeholder="Enter your email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -163,9 +225,14 @@ export default function Contact() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="contact-message" className="text-xs font-semibold text-text-muted">Message</label>
-                      <textarea 
-                        id="contact-message" 
+                      <label
+                        htmlFor="contact-message"
+                        className="text-xs font-semibold text-text-muted"
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        id="contact-message"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         required
@@ -174,7 +241,10 @@ export default function Contact() {
                     </div>
 
                     <div className="flex justify-center mt-2">
-                      <button type="submit" className="px-10 py-3 rounded-full font-heading font-semibold cursor-pointer transition-all duration-300 text-[0.95rem] bg-primary text-text-white shadow-[0_4px_12px_rgba(140,82,255,0.3)] hover:bg-primary-hover hover:shadow-[0_6px_18px_rgba(140,82,255,0.5)] hover:-translate-y-[2px] active:translate-y-0">
+                      <button
+                        type="submit"
+                        className="px-10 py-3 rounded-full font-heading font-semibold cursor-pointer transition-all duration-300 text-[0.95rem] bg-primary text-text-white shadow-[0_4px_12px_rgba(140,82,255,0.3)] hover:bg-primary-hover hover:shadow-[0_6px_18px_rgba(140,82,255,0.5)] hover:-translate-y-[2px] active:translate-y-0"
+                      >
                         Send Message
                       </button>
                     </div>
@@ -182,7 +252,6 @@ export default function Contact() {
                 </>
               )}
             </div>
-
           </div>
         </div>
       </section>

@@ -365,21 +365,26 @@ export const dbService = {
   // --- GALLERY ---
   async getGalleryItems(): Promise<GalleryItem[]> {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('gallery')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return (data || []).map(g => ({
-        id: g.id,
-        title: g.title,
-        image: g.image,
-        aspectRatio: g.aspect_ratio
-      }));
-    } else {
-      const items = localStorage.getItem(KEYS.GALLERY);
-      return items ? JSON.parse(items) : [];
+      try {
+        const { data, error } = await supabase
+          .from('gallery')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          return data.map(g => ({
+            id: g.id,
+            title: g.title,
+            image: g.image,
+            aspectRatio: g.aspect_ratio
+          }));
+        }
+      } catch (err) {
+        console.error('Error fetching gallery from Supabase:', err);
+      }
     }
+    const items = localStorage.getItem(KEYS.GALLERY);
+    const parsed = items ? JSON.parse(items) : [];
+    return parsed.length > 0 ? parsed : galleryData;
   },
 
   async createGalleryItem(item: Omit<GalleryItem, 'id'>): Promise<GalleryItem> {
@@ -408,6 +413,28 @@ export const dbService = {
     }
   },
 
+  async createGalleryItemsBatch(items: Array<Omit<GalleryItem, 'id'>>): Promise<void> {
+    if (items.length === 0) return;
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const rows = items.map(item => ({
+          title: item.title,
+          image: item.image,
+          aspect_ratio: item.aspectRatio
+        }));
+        const { error } = await supabase.from('gallery').insert(rows);
+        if (!error) return;
+        console.warn('Supabase insert warning, falling back to LocalStorage:', error);
+      } catch (err) {
+        console.warn('Supabase insert failed, falling back to LocalStorage:', err);
+      }
+    }
+    const existing = await this.getGalleryItems();
+    const newItems = items.map(item => ({ ...item, id: crypto.randomUUID() }));
+    const updated = [...newItems, ...existing];
+    localStorage.setItem(KEYS.GALLERY, JSON.stringify(updated));
+  },
+
   async deleteGalleryItem(id: string): Promise<void> {
     if (isSupabaseConfigured && supabase) {
       const { error } = await supabase
@@ -418,6 +445,21 @@ export const dbService = {
     } else {
       const items = await this.getGalleryItems();
       const filtered = items.filter(g => g.id !== id);
+      localStorage.setItem(KEYS.GALLERY, JSON.stringify(filtered));
+    }
+  },
+
+  async deleteGalleryItemsBatch(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase
+        .from('gallery')
+        .delete()
+        .in('id', ids);
+      if (error) throw error;
+    } else {
+      const items = await this.getGalleryItems();
+      const filtered = items.filter(g => !ids.includes(g.id));
       localStorage.setItem(KEYS.GALLERY, JSON.stringify(filtered));
     }
   },

@@ -90,10 +90,10 @@ export default function About() {
                 OUR MISSION
               </h3>
               <p className="text-white/95 text-[0.95rem] md:text-[1rem] leading-relaxed">
-                To ignite spiritual passion, raise mature kingdom ambassadors,
-                and transform communities globally by training believers in
-                prayer, sound biblical doctrine, and active marketplace
-                outreach.
+                Our mission is to reach and transform lives through outreaches
+                and prayer conferences, awakening hearts, breaking spiritual
+                darkness, and equipping people to live in the truth of their
+                identity in Christ Jesus.
               </p>
             </div>
 
@@ -103,10 +103,11 @@ export default function About() {
                 OUR VISION
               </h3>
               <p className="text-white/95 text-[0.95rem] md:text-[1rem] leading-relaxed">
-                To see equipped believers actively leading positive
-                transformation and standing as standard-bearers of
-                righteousness, love, and excellence in their families, cities,
-                and workplaces.
+                We envision a people no longer bound by spiritual darkness, but
+                fully alive in the light of Christ, hearts awakened, eyes
+                opened, and lives transformed. A generation that knows who they
+                are in Christ Jesus, walks in that identity boldly, and brings
+                light into every area of life and every place they go.
               </p>
             </div>
 
@@ -135,15 +136,18 @@ export default function About() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-10 lg:gap-16 mt-16 max-w-[1100px] mx-auto animate-fade-in">
-            
             {/* Card 1 */}
             <div className="relative group min-h-[300px]">
               {/* Rotated Orange Background Card */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
-              
+
               {/* Front Text Card */}
               <div className="relative bg-[#090212] border border-white/10 rounded-[2rem] p-8 pt-14 flex flex-col items-center justify-center text-center h-full z-10 shadow-[0_15px_35px_rgba(0,0,0,0.6)]">
-                <img src={pinImg} className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none" alt="Pin decoration" />
+                <img
+                  src={pinImg}
+                  className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none"
+                  alt="Pin decoration"
+                />
                 <p className="text-text-white text-[0.95rem] md:text-[1rem] leading-relaxed font-body">
                   We believe the Holy Bible is the inspired, infallible, and
                   complete Word of God. It stands as our final authority in all
@@ -153,13 +157,20 @@ export default function About() {
             </div>
 
             {/* Card 2 */}
-            <div className="relative group min-h-[300px]" style={{ animationDelay: "0.2s" }}>
+            <div
+              className="relative group min-h-[300px]"
+              style={{ animationDelay: "0.2s" }}
+            >
               {/* Rotated Orange Background Card */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
-              
+
               {/* Front Text Card */}
               <div className="relative bg-[#090212] border border-white/10 rounded-[2rem] p-8 pt-14 flex flex-col items-center justify-center text-center h-full z-10 shadow-[0_15px_35px_rgba(0,0,0,0.6)]">
-                <img src={pinImg} className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none" alt="Pin decoration" />
+                <img
+                  src={pinImg}
+                  className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none"
+                  alt="Pin decoration"
+                />
                 <p className="text-text-white text-[0.95rem] md:text-[1rem] leading-relaxed font-body">
                   We believe that consistent, spirit-led prayer is vital for a
                   thriving relationship with God. It is the fuel for personal
@@ -169,13 +180,20 @@ export default function About() {
             </div>
 
             {/* Card 3 */}
-            <div className="relative group min-h-[300px]" style={{ animationDelay: "0.4s" }}>
+            <div
+              className="relative group min-h-[300px]"
+              style={{ animationDelay: "0.4s" }}
+            >
               {/* Rotated Orange Background Card */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
-              
+
               {/* Front Text Card */}
               <div className="relative bg-[#090212] border border-white/10 rounded-[2rem] p-8 pt-14 flex flex-col items-center justify-center text-center h-full z-10 shadow-[0_15px_35px_rgba(0,0,0,0.6)]">
-                <img src={pinImg} className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none" alt="Pin decoration" />
+                <img
+                  src={pinImg}
+                  className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none"
+                  alt="Pin decoration"
+                />
                 <p className="text-text-white text-[0.95rem] md:text-[1rem] leading-relaxed font-body">
                   We believe every believer is called to be a minister of
                   reconciliation in their community. We are saved not just to go
@@ -183,7 +201,6 @@ export default function About() {
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -209,7 +226,7 @@ export default function About() {
                   alt={min.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                
+
                 {/* Dark Overlay */}
                 <div className="absolute inset-0 bg-black/15 transition-opacity duration-300 group-hover:bg-black/25"></div>
 

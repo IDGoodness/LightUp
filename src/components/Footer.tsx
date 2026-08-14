@@ -85,44 +85,45 @@ export default function Footer() {
               FOLLOW US
             </h4>
             <ul>
-              <li className="mb-3">
+              {/* <li className="mb-3">
                 <a
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-text-muted text-[0.95rem] hover:text-primary transition-colors duration-150"
                 >
-                  <img src={fb} alt="facebook" className='h-4 w-4' /> Facebook
+                  <img src={fb} alt="facebook" className="h-4 w-4" /> Facebook
                 </a>
-              </li>
+              </li> */}
               <li className="mb-3">
                 <a
-                  href="https://youtube.com"
+                  href="https://www.youtube.com/@Julianah_Ajadi"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-text-muted text-[0.95rem] hover:text-primary transition-colors duration-150"
                 >
-                  <img src={yt} alt="youtube" className='h-4 w-4' /> YouTube
+                  <img src={yt} alt="youtube" className="h-4 w-4" /> YouTube
                 </a>
               </li>
               <li className="mb-3">
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/lightupinternational?igsh=c29laHRjOXhvMTd6"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-text-muted text-[0.95rem] hover:text-primary transition-colors duration-150"
                 >
-                  <img src={insta} alt="instagram" className='h-4 w-4' /> Instagram
+                  <img src={insta} alt="instagram" className="h-4 w-4" />{" "}
+                  Instagram
                 </a>
               </li>
               <li className="mb-3">
                 <a
-                  href="https://mixlr.com"
+                  href="lightupprayermeeting1.mixlr.com "
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-text-muted text-[0.95rem] hover:text-primary transition-colors duration-150"
                 >
-                  <img src={mixlr} alt="mixlr" className='h-6 w-20' />
+                  <img src={mixlr} alt="mixlr" className="h-6 w-20" />
                 </a>
               </li>
             </ul>
@@ -132,7 +133,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-black/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[0.85rem] text-text-muted gap-4">
           <p>
-            All rights reserved. Light-Up International Christian Network ©{" "}
+            All rights reserved. LightUp International Christian Network ©{" "}
             {currentYear}
           </p>
           <div className="flex gap-6">
