@@ -94,7 +94,6 @@ export default function Admin() {
   const [galleryImagePreview, setGalleryImagePreview] = useState<string>('');
   const galleryImageInputRef = useRef<HTMLInputElement>(null);
   const [selectedGalleryIds, setSelectedGalleryIds] = useState<string[]>([]);
-  const [isGallerySelectMode, setIsGallerySelectMode] = useState(false);
 
   // Bulk Gallery & Google Drive Import States
   const [isBulkGalleryModalOpen, setIsBulkGalleryModalOpen] = useState(false);
@@ -380,7 +379,7 @@ export default function Admin() {
         img.onerror = () => resolve(e.target?.result as string);
         img.src = e.target?.result as string;
       };
-      img.readAsDataURL(file);
+      reader.readAsDataURL(file);
     });
   };
 
@@ -595,7 +594,6 @@ export default function Admin() {
     // Optimistic UI update: remove selected photos immediately from screen
     setGallery(prev => prev.filter(item => !idsToDelete.includes(item.id)));
     setSelectedGalleryIds([]);
-    setIsGallerySelectMode(false);
 
     try {
       await dbService.deleteGalleryItemsBatch(idsToDelete);

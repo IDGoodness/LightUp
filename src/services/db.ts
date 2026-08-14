@@ -165,6 +165,11 @@ export const dbService = {
     return parsed.length > 0 ? parsed : [...upcomingEventsData, ...pastEventsData];
   },
 
+  async getUpcomingEvents(): Promise<ChurchEvent[]> {
+    const all = await this.getEvents();
+    return all.filter(e => e.isUpcoming);
+  },
+
   async createEvent(event: Omit<ChurchEvent, 'id'>): Promise<ChurchEvent> {
     const newEvent = { ...event, id: crypto.randomUUID() };
     if (isSupabaseConfigured && supabase) {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Mail, Phone, Home, CheckCircle } from 'lucide-react';
-import fb from '../assets/fb.png';
+import { Mail, CheckCircle } from 'lucide-react';
 import yt from '../assets/yt.png';
 import insta from '../assets/insta.png';
 import mixlr from '../assets/mixlr.png';

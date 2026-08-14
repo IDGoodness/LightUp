@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import fb from '../assets/fb.png';
 import yt from '../assets/yt.png';
 import insta from '../assets/insta.png';
 import mixlr from '../assets/mixlr.png';
