@@ -174,7 +174,7 @@ export default function Gallery() {
           <img
             src={Img3}
             alt="LightUp Gallery Banner"
-            className="w-full h-auto block max-h-[450px] object-cover"
+            className="w-full h-auto block max-h-[700px] object-cover"
           />
         </div>
       </section>

@@ -130,7 +130,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-black/5 pt-8 flex flex-col md:flex-row justify-between items-center text-[0.85rem] text-text-muted gap-4">
+        <div className="border-t border-black/5 pt-8 flex flex-col md:flex-row text-center justify-between items-center text-[0.85rem] text-text-muted gap-4">
           <p>
             All rights reserved. LightUp International Christian Network ©{" "}
             {currentYear}

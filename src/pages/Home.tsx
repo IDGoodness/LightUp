@@ -494,7 +494,7 @@ export default function Home() {
             <img
               src={banner}
               alt="Ambassador planting flag"
-              className="max-h-[350px] object-contain filter drop-shadow-[0_15px_30px_rgba(140,82,255,0.4)]"
+              className="max-h-[500px] object-contain filter drop-shadow-[0_15px_30px_rgba(140,82,255,0.4)]"
             />
           </div>
         </div>
