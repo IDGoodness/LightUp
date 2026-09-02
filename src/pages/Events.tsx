@@ -3,6 +3,7 @@ import { Calendar, MapPin, Play, X, Check, ArrowRight, User, Mail, Sparkles, Clo
 import eventImg from '../assets/events.jpg';
 import { dbService } from '../services/db';
 import type { ChurchEvent } from '../data/churchData';
+import SEO from '../components/SEO';
 
 export default function Events() {
   const [eventsList, setEventsList] = useState<ChurchEvent[]>([]);
@@ -123,6 +124,31 @@ export default function Events() {
 
   return (
     <div className="events-page">
+      <SEO
+        title="Events & Conferences"
+        description="Explore upcoming LightUp conferences, revival meetings, worship nights, and campus events. Gather, grow, and encounter God's presence."
+        canonicalPath="/events"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: upcomingEvents.slice(0, 5).map((e, idx) => ({
+            '@type': 'ListItem',
+            position: idx + 1,
+            item: {
+              '@type': 'Event',
+              name: e.title,
+              description: e.description,
+              startDate: e.date,
+              eventStatus: 'https://schema.org/EventScheduled',
+              eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+              location: {
+                '@type': 'Place',
+                name: e.location || 'LightUp International Center'
+              }
+            }
+          }))
+        }}
+      />
       {/* 1. Hero Section */}
       <header
         className="relative bg-cover bg-center bg-no-repeat min-h-[50vh] flex items-center justify-center text-center py-24 px-6"

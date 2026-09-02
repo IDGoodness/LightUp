@@ -1,8 +1,14 @@
 import partnerImg from '../assets/partner.jpg';
+import SEO from '../components/SEO';
 
 export default function Partner() {
   return (
     <div className="partner-page bg-[#090212] min-h-screen text-text-white">
+      <SEO
+        title="Partner With Us"
+        description="Partner with LightUp International Christian Network to advance God's kingdom through financial giving, prayer, volunteering, and spreading the Gospel."
+        canonicalPath="/partner"
+      />
       {/* 1. Split Hero Section */}
       <header className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] min-h-[60vh] bg-bg-black">
         <div className="flex items-center py-16 px-6 sm:px-12 md:px-16 lg:px-24">

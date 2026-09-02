@@ -7,12 +7,26 @@ import eyeImg from '../assets/eye.png';
 import jewelImg from '../assets/jewel.png';
 import ecclipseImg from '../assets/ecclipse.png';
 import pinImg from '../assets/pin.png';
+import SEO from '../components/SEO';
 
 export default function About() {
   const btnPrimaryClass = "inline-flex items-center justify-center px-7 py-3 rounded-full font-heading font-semibold cursor-pointer transition-all duration-300 text-[0.95rem] gap-2 bg-primary text-text-white shadow-[0_4px_12px_rgba(140,82,255,0.3)] hover:bg-primary-hover hover:shadow-[0_6px_18px_rgba(140,82,255,0.5)] hover:-translate-y-[2px] active:translate-y-0";
 
   return (
     <div className="about-page">
+      <SEO
+        title="About Us"
+        description="Learn about the mission, vision, and values of LightUp International Christian Network. Awakening hearts and raising kingdom ambassadors across campuses and nations."
+        canonicalPath="/about"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: 'About LightUp International Christian Network',
+          description:
+            'LightUp International Christian Network is a Christ-centered ministry dedicated to awakening hearts and raising kingdom ambassadors through vibrant prayer, biblical teaching, and intentional mentorship.',
+          url: 'https://lightupinternational.org/about'
+        }}
+      />
       {/* 1. Hero Section */}
       <header
         className="relative bg-cover bg-center bg-no-repeat min-h-[50vh] flex items-center justify-center text-center py-24 px-6"

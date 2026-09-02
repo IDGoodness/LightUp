@@ -5,6 +5,7 @@ import { ministriesData } from '../data/ministryData';
 import { dbService } from '../services/db';
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import Newsletter from '../components/Newsletter';
+import SEO from '../components/SEO';
 import homepageImg from '../assets/homepage.jpg';
 import banner from '../assets/banner.png';
 import heroWorship from '../assets/hero_worship.jpg';
@@ -100,6 +101,11 @@ export default function Home() {
 
   return (
     <div className="home-page">
+      <SEO
+        title="Home"
+        description="LightUp International Christian Network is a mission-driven ministry dedicated to raising believers through prayer, biblical teaching, mentorship, and transformative gatherings."
+        canonicalPath="/"
+      />
       {/* 1. Hero Section */}
       <header
         className="relative bg-cover bg-center bg-no-repeat min-h-[85vh] lg:min-h-[90vh] flex items-center py-20 px-6 sm:px-12 md:px-16 overflow-hidden"

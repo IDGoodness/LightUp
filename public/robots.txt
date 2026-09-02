@@ -1,0 +1,9 @@
+# LightUp International Christian Network
+# Allow all reputable crawlers (Google, Bing, DuckDuckGo, Yahoo, etc.)
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# Primary Host & Sitemap
+Host: https://lightupinternational.org
+Sitemap: https://lightupinternational.org/sitemap.xml

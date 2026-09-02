@@ -3,6 +3,7 @@ import { Play, Search, X, Calendar, Clock } from 'lucide-react';
 import sermonImg from '../assets/sermonImg.jpg';
 import { dbService } from '../services/db';
 import type { Sermon } from '../data/churchData';
+import SEO from '../components/SEO';
 
 export default function Sermons() {
   const [sermonsList, setSermonsList] = useState<Sermon[]>([]);
@@ -36,6 +37,11 @@ export default function Sermons() {
 
   return (
     <div className="sermons-page">
+      <SEO
+        title="Sermons & Messages"
+        description="Listen to life-transforming sermons, biblical teachings, and spirit-filled messages from LightUp International Christian Network."
+        canonicalPath="/sermons"
+      />
       {/* 1. Hero Section */}
       <header
         className="relative bg-cover bg-center bg-no-repeat min-h-[100vh] flex items-center justify-center text-center py-24 px-6"

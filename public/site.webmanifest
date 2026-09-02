@@ -1,0 +1,22 @@
+{
+  "name": "LightUp International Christian Network",
+  "short_name": "LightUp",
+  "description": "Igniting Hearts, Raising Kingdom Ambassadors, Transforming Lives through Christ.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0618",
+  "theme_color": "#8c52ff",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

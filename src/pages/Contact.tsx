@@ -5,6 +5,7 @@ import yt from '../assets/yt.png';
 import insta from '../assets/insta.png';
 import mixlr from '../assets/mixlr.png';
 import { dbService } from '../services/db';
+import SEO from '../components/SEO';
 
 export default function Contact() {
   const [name, setName] = useState('');
@@ -34,6 +35,23 @@ export default function Contact() {
 
   return (
     <div className="contact-page bg-[#0e031c] min-h-screen text-text-white pb-32">
+      <SEO
+        title="Contact Us & Prayer Requests"
+        description="Get in touch with LightUp International Christian Network. Send us a message, submit prayer requests, or connect with our team."
+        canonicalPath="/contact"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          name: 'Contact LightUp International Christian Network',
+          description: 'Contact us for inquiries, prayer requests, and partnership opportunities.',
+          url: 'https://lightupinternational.org/contact',
+          mainEntity: {
+            '@type': 'Organization',
+            name: 'LightUp International Christian Network',
+            email: 'lightupintl111@gmail.com'
+          }
+        }}
+      />
       {/* 1. Hero Section */}
       <header className="relative flex flex-col items-center justify-center text-center pt-24 pb-12 px-6">
         <div className="relative z-20 max-w-[800px] animate-fade-in">

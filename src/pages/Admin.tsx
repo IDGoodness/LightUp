@@ -24,6 +24,7 @@ import type { ContactSubmission, NewsletterSubscriber, EventRegistration } from 
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import homepageImg from '../assets/homepage.jpg';
 import logo from '../assets/logo.png';
+import SEO from '../components/SEO';
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -702,6 +703,7 @@ export default function Admin() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#0e031c] flex items-center justify-center p-4 sm:p-6">
+        <SEO title="Admin Portal" noindex={true} />
         <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-100 animate-fade-in">
           <div className="text-center mb-8">
             <img
@@ -766,6 +768,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-bg-dark text-text-white flex flex-col font-body">
+      <SEO title="Admin Dashboard" noindex={true} />
       {/* Header bar */}
       <header className="bg-white/95 backdrop-blur-md border-b border-black/10 h-20 flex justify-between items-center px-4 sm:px-8 md:px-12 sticky top-0 z-40">
         <div className="flex items-center gap-3">

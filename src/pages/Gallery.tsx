@@ -6,6 +6,7 @@ import {
 import { dbService } from '../services/db';
 import type { GalleryItem } from '../data/churchData';
 import Img3 from '../assets/Img3.jpg';
+import SEO from '../components/SEO';
 
 type SortOption = 'default' | 'title-asc' | 'title-desc' | 'random';
 type FilterOption = 'all' | 'vertical' | 'horizontal' | 'square';
@@ -168,6 +169,11 @@ export default function Gallery() {
 
   return (
     <div className="gallery-page bg-[#0a0314] min-h-screen text-text-white">
+      <SEO
+        title="Ministry Moments & Gallery"
+        description="Browse photos, moments of worship, conferences, and memorable gatherings from LightUp International Christian Network."
+        canonicalPath="/gallery"
+      />
       {/* 1. Hero Banner Display */}
       <section className="relative z-10">
         <div className="w-full text-center">
