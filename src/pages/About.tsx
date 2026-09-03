@@ -19,12 +19,12 @@ export default function About() {
         description="Learn about the mission, vision, and values of LightUp International Christian Network. Awakening hearts and raising kingdom ambassadors across campuses and nations."
         canonicalPath="/about"
         jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'AboutPage',
-          name: 'About LightUp International Christian Network',
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "About LightUp International Christian Network",
           description:
-            'LightUp International Christian Network is a Christ-centered ministry dedicated to awakening hearts and raising kingdom ambassadors through vibrant prayer, biblical teaching, and intentional mentorship.',
-          url: 'https://lightupinternational.org/about'
+            "LightUp International Christian Network is a Christ-centered ministry dedicated to awakening hearts and raising kingdom ambassadors through vibrant prayer, biblical teaching, and intentional mentorship.",
+          url: "https://lightupinternational.org/about",
         }}
       />
       {/* 1. Hero Section */}
@@ -37,10 +37,11 @@ export default function About() {
             WHO ARE WE?
           </h1>
           <p className="max-w-[800px] mx-auto text-[1.05rem] text-text-dimmed leading-relaxed">
-            LightUp International Christian Network is a Christ-centered ministry
-            dedicated to awakening hearts, breaking spiritual darkness, and raising
-            a generation of kingdom ambassadors through vibrant prayer, in-depth biblical
-            teaching, intentional mentorship, and impactful gatherings worldwide.
+            LightUp International Christian Network is a Christ-centered
+            ministry dedicated to awakening hearts, breaking spiritual darkness,
+            and raising a generation of kingdom ambassadors through vibrant
+            prayer, in-depth biblical teaching, intentional mentorship, and
+            impactful gatherings worldwide.
           </p>
         </div>
       </header>
@@ -105,11 +106,9 @@ export default function About() {
                 OUR VISION
               </h3>
               <p className="text-white/95 text-[0.95rem] md:text-[1rem] leading-relaxed">
-                We envision a people no longer bound by spiritual darkness, but
-                fully alive in the light of Christ, hearts awakened, eyes
-                opened, and lives transformed. A generation that knows who they
-                are in Christ Jesus, walks in that identity boldly, and brings
-                light into every area of life and every place they go.
+                We believe in the Gospel, the finished work of Christ, and it is
+                from this understanding that we live, walk, and express our
+                faith.
               </p>
             </div>
 

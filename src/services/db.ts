@@ -48,22 +48,47 @@ const KEYS = {
   ADMIN_AUTH: 'lightup_admin_auth',
 };
 
-// Initialize LocalStorage with real churchData if empty or holding outdated placeholders
+// Initialize LocalStorage with real churchData and keep default items synchronized with code updates
 const initLocalStorage = () => {
   if (typeof window === 'undefined') return;
 
+  const defaultEvents = [
+    ...upcomingEventsData.map(e => ({ ...e })),
+    ...pastEventsData.map(e => ({ ...e }))
+  ];
   const storedEvents = localStorage.getItem(KEYS.EVENTS);
   if (!storedEvents || storedEvents === '[]' || storedEvents.includes('Prayer Office')) {
-    const allEvents = [
-      ...upcomingEventsData.map(e => ({ ...e })),
-      ...pastEventsData.map(e => ({ ...e }))
-    ];
-    localStorage.setItem(KEYS.EVENTS, JSON.stringify(allEvents));
+    localStorage.setItem(KEYS.EVENTS, JSON.stringify(defaultEvents));
+  } else {
+    try {
+      const parsed = JSON.parse(storedEvents) as ChurchEvent[];
+      const defaultMap = new Map(defaultEvents.map(e => [e.id, e]));
+      // Update any default items with latest churchData while preserving user-added custom events
+      const mergedEvents = parsed.map(e => (defaultMap.has(e.id) ? defaultMap.get(e.id)! : e));
+      // Append any new default events that didn't exist in storage
+      for (const defEvent of defaultEvents) {
+        if (!mergedEvents.some(e => e.id === defEvent.id)) {
+          mergedEvents.push(defEvent);
+        }
+      }
+      localStorage.setItem(KEYS.EVENTS, JSON.stringify(mergedEvents));
+    } catch {
+      localStorage.setItem(KEYS.EVENTS, JSON.stringify(defaultEvents));
+    }
   }
 
   const storedSermons = localStorage.getItem(KEYS.SERMONS);
   if (!storedSermons || storedSermons === '[]' || storedSermons.includes('Building your life by the Word') || storedSermons.includes('Walking in the Light')) {
     localStorage.setItem(KEYS.SERMONS, JSON.stringify(sermonsData));
+  } else {
+    try {
+      const parsedSermons = JSON.parse(storedSermons) as Sermon[];
+      const defaultSermonMap = new Map(sermonsData.map(s => [s.id, s]));
+      const mergedSermons = parsedSermons.map(s => (defaultSermonMap.has(s.id) ? defaultSermonMap.get(s.id)! : s));
+      localStorage.setItem(KEYS.SERMONS, JSON.stringify(mergedSermons));
+    } catch {
+      localStorage.setItem(KEYS.SERMONS, JSON.stringify(sermonsData));
+    }
   }
 
   const storedGallery = localStorage.getItem(KEYS.GALLERY);

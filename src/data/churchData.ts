@@ -59,21 +59,21 @@ export const upcomingEventsData: ChurchEvent[] = [
   },
   {
     id: 'e2',
-    title: 'Monthly Meetings: 1st Saturday of every Month',
-    date: '1st Saturday',
-    time: '5:00 PM',
+    title: 'Monthly Meetings',
+    date: '1st Saturday of every month',
+    time: '7:30 AM',
     description: 'Join us for our monthly congregation gathering. A special time of worship, teaching, and community as we come together to experience God\'s presence.',
-    location: 'Main Auditorium',
+    location: 'YouTube Live',
     image: Img6,
     isUpcoming: true
   },
   {
     id: 'e3',
     title: 'Campus Outreach (ARISE)',
-    date: 'Monthly Campus Tour',
+    date: 'Campus Tour',
     time: '10:00 AM',
     description: 'Reaching students with the Gospel of Jesus Christ and empowering them to be lights in their institutions and beyond.',
-    location: 'Campus Centers',
+    location: 'Campuses',
     image: Img4,
     isUpcoming: true
   }

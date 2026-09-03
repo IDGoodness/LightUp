@@ -53,10 +53,25 @@ export default function Home() {
   const openVideo = (url: string) => setActiveVideo(url);
   const closeVideo = () => setActiveVideo(null);
 
-  // Take first 3 ministries and up to 3 sermons
+  // Featured data slices
   const featuredMinistries = ministriesData.slice(0, 3);
   const featuredSermons = sermonsList.slice(0, 3);
   const nextUpcomingEvent = eventsList[0] || null;
+
+  // Alternating Hero Vision Statement State
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [heroFading, setHeroFading] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroFading(true);
+      setTimeout(() => {
+        setHeroIndex((prev) => (prev === 0 ? 1 : 0));
+        setHeroFading(false);
+      }, 350);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Gallery slider states
   const [galleryIndex, setGalleryIndex] = useState(0);
@@ -120,14 +135,50 @@ export default function Home() {
         <div className="w-full max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-20 animate-fade-in">
           {/* Left Column: Text Content */}
           <div className="flex flex-col gap-6 items-start text-left max-w-[600px] z-20">
-            <h1 className="text-white font-heading font-extrabold text-[2.5rem] sm:text-[3.2rem] lg:text-[3rem] leading-[1.1] tracking-tight">
-              <span className="text-gradient-orange">Igniting</span> Hearts.
-              <br />
-              <span className="text-gradient-orange">Transforming</span> Lives.
-              <br />
-              <span className="text-gradient-orange">Raising</span> Kingdom
-              Ambassadors.
-            </h1>
+            <div className="w-full min-h-[145px] sm:min-h-[175px] lg:min-h-[195px] flex flex-col justify-center">
+              <h1
+                className={`text-white font-heading font-extrabold text-[2.2rem] sm:text-[3rem] lg:text-[2.85rem] leading-[1.12] tracking-tight uppercase transition-all duration-300 transform ${
+                  heroFading
+                    ? 'opacity-0 translate-y-2'
+                    : 'opacity-100 translate-y-0'
+                }`}
+              >
+                {heroIndex === 0 ? (
+                  <>
+                    WE ENVISION <br />
+                    <span className="text-gradient-orange">ALL MEN</span> WALKING <br />
+                    IN THE <span className="text-gradient-orange">LIGHT.</span>
+                  </>
+                ) : (
+                  <>
+                    TILL THE <br />
+                    <span className="text-gradient-orange">WHOLE WORLD</span> <br />
+                    IS FULL OF <span className="text-gradient-orange">LIGHT.</span>
+                  </>
+                )}
+              </h1>
+
+              {/* Alternating Indicator Pills */}
+              <div className="flex items-center gap-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setHeroIndex(0)}
+                  aria-label="Vision statement 1"
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    heroIndex === 0 ? 'w-8 bg-accent-orange shadow-[0_0_8px_rgba(255,168,0,0.6)]' : 'w-2 bg-white/30 hover:bg-white/60'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setHeroIndex(1)}
+                  aria-label="Vision statement 2"
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    heroIndex === 1 ? 'w-8 bg-accent-orange shadow-[0_0_8px_rgba(255,168,0,0.6)]' : 'w-2 bg-white/30 hover:bg-white/60'
+                  }`}
+                />
+              </div>
+            </div>
+
             <p className="text-text-dimmed text-[0.9rem] leading-relaxed max-w-[500px]">
               A Christ-centered ministry dedicated to raising believers through
               prayer, biblical teaching, mentorship and impactful gatherings
