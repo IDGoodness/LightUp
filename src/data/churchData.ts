@@ -21,6 +21,7 @@ export interface ChurchEvent {
   id: string;
   title: string;
   date: string;
+  endDate?: string;
   time: string;
   monthYear?: string;
   description: string;
@@ -36,6 +37,161 @@ export interface GalleryItem {
   title: string;
   image: string;
   aspectRatio: 'vertical' | 'horizontal' | 'square';
+}
+
+/**
+ * Checks whether an event date string represents a recurring/ongoing schedule.
+ */
+export function isEventRecurring(dateStr?: string): boolean {
+  if (!dateStr) return false;
+  const s = dateStr.trim().toLowerCase();
+  const recurringKeywords = [
+    'mon - fri',
+    'mon-fri',
+    'monday - friday',
+    'every',
+    'weekly',
+    'monthly',
+    'daily',
+    'tour',
+    'ongoing',
+    'tbd',
+    'coming soon'
+  ];
+  return recurringKeywords.some((kw) => s.includes(kw));
+}
+
+/**
+ * Formats start date and optional end date into a clean, human-readable date range.
+ * Examples:
+ * - "Thu, 10 Sep 2026" (single day)
+ * - "Thu, 10 - Sun, 13 Sep 2026" (same month multi-day)
+ * - "Fri, 28 Sep - Sun, 2 Oct 2026" (cross-month multi-day)
+ */
+export function formatEventDateRange(startDateRaw: string, endDateRaw?: string): string {
+  if (!startDateRaw) return '';
+  if (!endDateRaw || startDateRaw === endDateRaw) {
+    const d = new Date(startDateRaw + 'T00:00:00');
+    if (isNaN(d.getTime())) return startDateRaw;
+    return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  const start = new Date(startDateRaw + 'T00:00:00');
+  const end = new Date(endDateRaw + 'T00:00:00');
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return startDateRaw;
+
+  const startWeekday = start.toLocaleDateString('en-GB', { weekday: 'short' });
+  const startDay = start.getDate();
+  const startMonth = start.toLocaleDateString('en-GB', { month: 'short' });
+  const startYear = start.getFullYear();
+
+  const endWeekday = end.toLocaleDateString('en-GB', { weekday: 'short' });
+  const endDay = end.getDate();
+  const endMonth = end.toLocaleDateString('en-GB', { month: 'short' });
+  const endYear = end.getFullYear();
+
+  if (startYear === endYear) {
+    if (startMonth === endMonth) {
+      return `${startWeekday}, ${startDay} - ${endWeekday}, ${endDay} ${endMonth} ${endYear}`;
+    } else {
+      return `${startWeekday}, ${startDay} ${startMonth} - ${endWeekday}, ${endDay} ${endMonth} ${endYear}`;
+    }
+  } else {
+    return `${startWeekday}, ${startDay} ${startMonth} ${startYear} - ${endWeekday}, ${endDay} ${endMonth} ${endYear}`;
+  }
+}
+
+/**
+ * Parses a single date string into a Date object set to the end of that day (23:59:59).
+ */
+function parseSingleDateString(s: string): Date | null {
+  if (!s) return null;
+  const trimmed = s.trim();
+
+  // 1. ISO format: YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+    const d = new Date(trimmed + 'T23:59:59');
+    if (!isNaN(d.getTime())) return d;
+  }
+
+  // 2. DD.MM.YYYY or DD/MM/YYYY
+  const ddmmyyyy = trimmed.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})/);
+  if (ddmmyyyy) {
+    const d = new Date(`${ddmmyyyy[3]}-${ddmmyyyy[2].padStart(2, '0')}-${ddmmyyyy[1].padStart(2, '0')}T23:59:59`);
+    if (!isNaN(d.getTime())) return d;
+  }
+
+  // 3. Formatted dates like "Thu, 10 Sep 2026", "13 Sep 2026", "September 10, 2026"
+  const hasYear = /\b(19|20)\d{2}\b/.test(trimmed);
+  const dateToParse = hasYear ? trimmed : `${trimmed} ${new Date().getFullYear()}`;
+  const parsed = Date.parse(dateToParse);
+  if (!isNaN(parsed)) {
+    const d = new Date(parsed);
+    d.setHours(23, 59, 59, 999);
+    return d;
+  }
+
+  return null;
+}
+
+/**
+ * Parses an event date or date-range into the final Date object (end of event).
+ * Supports both single dates and multi-day spans (e.g. "Thu, 10 - Sun, 13 Sep 2026").
+ */
+export function parseEventDate(dateStr?: string, timeStr?: string, endDateStr?: string): Date | null {
+  if (endDateStr && !isEventRecurring(endDateStr)) {
+    const parsedEnd = parseSingleDateString(endDateStr);
+    if (parsedEnd) return parsedEnd;
+  }
+
+  if (!dateStr || isEventRecurring(dateStr)) return null;
+  const s = dateStr.trim();
+
+  // If date string contains a multi-day range: e.g. "Thu, 10 - Sun, 13 Sep 2026" or "10 - 13 Sep 2026"
+  if (s.includes(' - ') || s.includes(' to ')) {
+    const parts = s.split(/\s+(?:-|to)\s+/i);
+    if (parts.length >= 2) {
+      const endPart = parts[parts.length - 1].trim();
+      const parsedEnd = parseSingleDateString(endPart);
+      if (parsedEnd) return parsedEnd;
+    }
+  }
+
+  return parseSingleDateString(s);
+}
+
+/**
+ * Checks whether an event has expired (its scheduled end date has passed).
+ */
+export function isEventExpired(event: ChurchEvent): boolean {
+  if (!event.isUpcoming) return true;
+  if (isEventRecurring(event.date)) return false;
+
+  const eventEndDate = parseEventDate(event.date, event.time, event.endDate);
+  if (eventEndDate) {
+    return eventEndDate.getTime() < Date.now();
+  }
+  return false;
+}
+
+/**
+ * Determines whether an event should be displayed in the Upcoming events section.
+ */
+export function isEventUpcoming(event: ChurchEvent): boolean {
+  return event.isUpcoming && !isEventExpired(event);
+}
+
+/**
+ * Derives a human-readable Month & Year string (e.g. "September 2026") for an event.
+ */
+export function formatEventMonthYear(event: ChurchEvent): string {
+  if (event.monthYear && event.monthYear.trim()) return event.monthYear.trim();
+  const parsed = parseEventDate(event.date, event.time, event.endDate);
+  if (parsed) {
+    return parsed.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+  return event.date || '';
 }
 
 import homepageImg from '../assets/homepage.jpg';

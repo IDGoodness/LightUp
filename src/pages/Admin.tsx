@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { dbService } from '../services/db';
 import type { ContactSubmission, NewsletterSubscriber, EventRegistration } from '../services/db';
+import { isEventRecurring, isEventExpired, isEventUpcoming, formatEventMonthYear, formatEventDateRange } from '../data/churchData';
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import homepageImg from '../assets/homepage.jpg';
 import logo from '../assets/logo.png';
@@ -82,8 +83,11 @@ export default function Admin() {
 
   const [viewingRegistrationsEventId, setViewingRegistrationsEventId] = useState<string | null>(null);
   const [eventImagePreview, setEventImagePreview] = useState<string>('');
-  const [eventDateRaw, setEventDateRaw] = useState<string>('');   // YYYY-MM-DD for date picker
-  const [eventTimeRaw, setEventTimeRaw] = useState<string>('');   // HH:MM for time picker
+  const [isMultiDayEvent, setIsMultiDayEvent] = useState<boolean>(false);
+  const [eventStartDateRaw, setEventStartDateRaw] = useState<string>(''); // YYYY-MM-DD for start date
+  const [eventEndDateRaw, setEventEndDateRaw] = useState<string>('');     // YYYY-MM-DD for end date
+  const [eventDateRaw, setEventDateRaw] = useState<string>('');           // YYYY-MM-DD for single date
+  const [eventTimeRaw, setEventTimeRaw] = useState<string>('');           // HH:MM for time picker
   const eventImageInputRef = useRef<HTMLInputElement>(null);
 
   // Sermon-specific UI state
@@ -173,11 +177,15 @@ export default function Admin() {
   const openNewEventModal = () => {
     setEditingEvent(null);
     setEventImagePreview('');
+    setIsMultiDayEvent(false);
+    setEventStartDateRaw('');
+    setEventEndDateRaw('');
     setEventDateRaw('');
     setEventTimeRaw('');
     setEventForm({
       title: '',
       date: '',
+      endDate: '',
       time: '',
       location: '',
       description: '',
@@ -192,11 +200,16 @@ export default function Admin() {
   const openEditEventModal = (event: ChurchEvent) => {
     setEditingEvent(event);
     setEventImagePreview(event.image || '');
-    setEventDateRaw('');  // can't reverse-parse formatted string reliably
-    setEventTimeRaw('');  // admin can re-pick if they want to change
+    const isMulti = !!(event.endDate || event.date.includes(' - ') || event.date.includes(' to '));
+    setIsMultiDayEvent(isMulti);
+    setEventStartDateRaw('');
+    setEventEndDateRaw(event.endDate || '');
+    setEventDateRaw('');
+    setEventTimeRaw('');
     setEventForm({
       title: event.title,
       date: event.date,
+      endDate: event.endDate || '',
       time: event.time || '',
       location: event.location,
       description: event.description,
@@ -948,13 +961,13 @@ export default function Admin() {
               {/* Tab 2: Events */}
               {activeTab === "events" && (
                 <div className="flex flex-col gap-6 animate-fade-in">
-                  <div className="flex flex-wrap justify-between items-center gap-4 mb-2">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-2">
                     <h2 className="text-xl sm:text-2xl font-heading font-bold">
                       Manage Calendar Events ({events.length})
                     </h2>
                     <button
                       onClick={openNewEventModal}
-                      className="flex items-center gap-2 bg-primary hover:bg-primary-hover px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold cursor-pointer transition-all shadow-md"
+                      className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover w-full sm:w-auto px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold cursor-pointer transition-all shadow-md active:scale-95"
                     >
                       <Plus size={16} /> Add New Event
                     </button>
@@ -962,7 +975,7 @@ export default function Admin() {
 
                   {events.length === 0 ? (
                     <div className="bg-card-dark p-8 text-center rounded-xl border border-white/5 text-text-dimmed text-sm">
-                      No.events.registered in system.
+                      No events registered in system.
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 gap-4">
@@ -971,74 +984,86 @@ export default function Admin() {
                         return (
                           <div
                             key={event.id}
-                            className="bg-card-dark border border-white/10 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                            className="bg-card-dark border border-white/10 rounded-xl p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all hover:border-white/20"
                           >
-                            <div className="flex items-start gap-4">
+                            <div className="flex items-start gap-3.5 sm:gap-4 w-full md:flex-1 min-w-0">
                               <img
                                 src={event.image}
                                 alt=""
-                                className="h-16 w-16 object-cover rounded-lg shrink-0 border border-white/10"
+                                className="h-16 w-16 sm:h-20 sm:w-20 object-cover rounded-xl shrink-0 border border-white/10 bg-black/30"
                               />
-                              <div>
-                                <span
-                                  className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block ${
-                                    event.isUpcoming
-                                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                      : "bg-white/10 text-text-dimmed"
-                                  }`}
-                                >
-                                  {event.isUpcoming ? "Upcoming" : "Past Event"}
-                                </span>
-                                <h3 className="text-base sm:text-lg font-bold text-white mt-1">
+                              <div className="flex-1 min-w-0">
+                                <div className="mb-1">
+                                  {isEventRecurring(event.date) ? (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                      Recurring Series
+                                    </span>
+                                  ) : isEventUpcoming(event) ? (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                      Upcoming
+                                    </span>
+                                  ) : (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block bg-white/10 text-text-dimmed border border-white/10">
+                                      Past Event
+                                    </span>
+                                  )}
+                                </div>
+                                <h3 className="text-sm sm:text-base md:text-lg font-bold text-white break-words line-clamp-2">
                                   {event.title}
                                 </h3>
-                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-dimmed mt-1">
-                                  {event.isUpcoming ? (
+                                <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 text-xs text-text-dimmed mt-1.5">
+                                  {isEventUpcoming(event) ? (
                                     <>
                                       <span className="flex items-center gap-1">
-                                        <Calendar size={12} /> {event.date}
+                                        <Calendar size={12} className="shrink-0 text-primary" /> {event.date}
                                       </span>
-                                      <span className="flex items-center gap-1">
-                                        <Clock size={12} /> {event.time}
-                                      </span>
+                                      {event.time && (
+                                        <span className="flex items-center gap-1">
+                                          <Clock size={12} className="shrink-0 text-primary" /> {event.time}
+                                        </span>
+                                      )}
                                     </>
                                   ) : (
-                                    <span>Month: {event.monthYear}</span>
+                                    <span>Month: {event.monthYear || formatEventMonthYear(event) || event.date}</span>
                                   )}
                                   <span className="flex items-center gap-1">
-                                    <MapPin size={12} /> {event.location}
+                                    <MapPin size={12} className="shrink-0 text-primary" /> {event.location}
                                   </span>
                                 </div>
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end pt-3 sm:pt-0 border-t sm:border-t-0 border-white/5">
-                              {event.isUpcoming && (
+                            <div className="flex items-center justify-between md:justify-end gap-2.5 w-full md:w-auto pt-3 md:pt-0 border-t md:border-t-0 border-white/10">
+                              {event.isUpcoming ? (
                                 <button
                                   onClick={() =>
                                     setViewingRegistrationsEventId(
                                       viewingRegistrationsEventId === event.id ? null : event.id
                                     )
                                   }
-                                  className="flex items-center gap-1.5 px-3 py-1.5 border border-primary/30 rounded-lg text-xs font-semibold text-primary hover:bg-primary/10 transition-all cursor-pointer"
+                                  className="flex items-center gap-1.5 px-3 py-2 border border-primary/30 rounded-lg text-xs font-semibold text-primary hover:bg-primary/10 transition-all cursor-pointer shrink-0"
                                 >
                                   <Users size={14} /> RSVPs ({eventRegs.length})
                                 </button>
+                              ) : (
+                                <div />
                               )}
-                              <button
-                                onClick={() => openEditEventModal(event)}
-                                className="p-2 border border-white/10 rounded-lg text-text-dimmed hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-                                title="Edit Event"
-                              >
-                                <Edit2 size={14} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteEvent(event.id)}
-                                className="p-2 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
-                                title="Delete Event"
-                              >
-                                <Trash2 size={14} />
-                              </button>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => openEditEventModal(event)}
+                                  className="p-2 border border-white/10 rounded-lg text-text-dimmed hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                                  title="Edit Event"
+                                >
+                                  <Edit2 size={14} />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteEvent(event.id)}
+                                  className="p-2 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
+                                  title="Delete Event"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         );
@@ -1048,29 +1073,29 @@ export default function Admin() {
 
                   {/* Registered RSVP List for Selected Event */}
                   {viewingRegistrationsEventId && (
-                    <div className="mt-4 bg-card-dark p-5 sm:p-6 rounded-xl border border-primary/30 animate-fade-in">
-                      <div className="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
-                        <h3 className="font-bold text-white text-base sm:text-lg">
+                    <div className="mt-4 bg-card-dark p-4 sm:p-6 rounded-xl border border-primary/30 animate-fade-in">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-white/10">
+                        <h3 className="font-bold text-white text-sm sm:text-base break-words">
                           RSVP List for:{" "}
-                          <span className="text-primary">
+                          <span className="text-primary block sm:inline">
                             {events.find((e) => e.id === viewingRegistrationsEventId)?.title}
                           </span>
                         </h3>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                           {registrations.filter((r) => r.event_id === viewingRegistrationsEventId).length > 0 && (
                             <button
                               onClick={() => {
                                 const ev = events.find((e) => e.id === viewingRegistrationsEventId);
                                 if (ev) exportRegistrationsToExcel(ev.id, ev.title);
                               }}
-                              className="flex items-center gap-1.5 text-xs bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white px-2.5 py-1 rounded-md border border-emerald-500/30 cursor-pointer transition-all font-medium"
+                              className="flex items-center gap-1.5 text-xs bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white px-2.5 py-1.5 rounded-md border border-emerald-500/30 cursor-pointer transition-all font-medium"
                             >
-                              <FileSpreadsheet size={13} /> Export RSVPs (Excel)
+                              <FileSpreadsheet size={13} /> Export (Excel)
                             </button>
                           )}
                           <button
                             onClick={() => setViewingRegistrationsEventId(null)}
-                            className="text-xs bg-white/10 hover:bg-white/20 text-white px-2.5 py-1 rounded-md cursor-pointer transition-all"
+                            className="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-md cursor-pointer transition-all"
                           >
                             Close
                           </button>
@@ -1078,16 +1103,16 @@ export default function Admin() {
                       </div>
                       {registrations.filter((r) => r.event_id === viewingRegistrationsEventId).length === 0 ? (
                         <div className="text-sm text-text-dimmed italic">
-                          No.attendee.RSVPs registered.for this event.
+                          No attendee RSVPs registered for this event.
                         </div>
                       ) : (
                         <div className="divide-y divide-white/5">
                           {registrations
                             .filter((r) => r.event_id === viewingRegistrationsEventId)
                             .map((reg) => (
-                              <div key={reg.id} className="flex flex-wrap justify-between items-center text-sm py-2 gap-2">
+                              <div key={reg.id} className="flex flex-col sm:flex-row justify-between sm:items-center text-sm py-2.5 gap-1">
                                 <span className="font-semibold text-white">{reg.name}</span>
-                                <span className="text-primary text-xs font-mono">{reg.email}</span>
+                                <span className="text-primary text-xs font-mono break-all">{reg.email}</span>
                               </div>
                             ))}
                         </div>
@@ -1342,50 +1367,196 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
-                    Date {editingEvent && eventForm.date && <span className="normal-case text-primary font-normal">(current: {eventForm.date})</span>}
-                  </label>
-                  <input
-                    type="date"
-                    required={!editingEvent}
-                    className="bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary [color-scheme:dark] cursor-pointer"
-                    value={eventDateRaw}
-                    onChange={(e) => {
-                      const raw = e.target.value; // YYYY-MM-DD
-                      setEventDateRaw(raw);
-                      const fmt = raw ? new Date(raw + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
-                      setEventForm({ ...eventForm, date: fmt || eventForm.date });
+              {/* Duration Type Segmented Tabs */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
+                  Event Duration Type
+                </label>
+                <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 border border-white/10 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMultiDayEvent(false);
+                      setEventEndDateRaw('');
+                      if (eventStartDateRaw) {
+                        const dateObj = new Date(eventStartDateRaw + 'T00:00:00');
+                        const fmt = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                        const my = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                        setEventForm(prev => ({ ...prev, date: fmt, endDate: undefined, monthYear: prev.monthYear || my }));
+                      }
                     }}
-                  />
-                  {eventDateRaw && eventForm.date && (
-                    <span className="text-xs text-primary mt-0.5">{eventForm.date}</span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
-                    Time {editingEvent && eventForm.time && <span className="normal-case text-primary font-normal">(current: {eventForm.time})</span>}
-                  </label>
-                  <input
-                    type="time"
-                    className="bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary [color-scheme:dark] cursor-pointer"
-                    value={eventTimeRaw}
-                    onChange={(e) => {
-                      const raw = e.target.value; // HH:MM
-                      setEventTimeRaw(raw);
-                      if (!raw) { setEventForm({ ...eventForm, time: '' }); return; }
-                      const [h, m] = raw.split(':').map(Number);
-                      const ampm = h >= 12 ? 'PM' : 'AM';
-                      const h12 = h % 12 || 12;
-                      setEventForm({ ...eventForm, time: `${h12}:${String(m).padStart(2, '0')} ${ampm}` });
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      !isMultiDayEvent
+                        ? "bg-primary text-white shadow-md shadow-primary/30"
+                        : "text-text-dimmed hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Calendar size={14} /> Single Day Event
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMultiDayEvent(true);
+                      if (eventStartDateRaw) {
+                        const formattedRange = formatEventDateRange(eventStartDateRaw, eventEndDateRaw || eventStartDateRaw);
+                        const my = new Date(eventStartDateRaw + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                        setEventForm(prev => ({
+                          ...prev,
+                          date: formattedRange,
+                          endDate: eventEndDateRaw || eventStartDateRaw,
+                          monthYear: prev.monthYear || my
+                        }));
+                      }
                     }}
-                  />
-                  {eventForm.time && (
-                    <span className="text-xs text-primary mt-0.5">{eventForm.time}</span>
-                  )}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      isMultiDayEvent
+                        ? "bg-primary text-white shadow-md shadow-primary/30"
+                        : "text-text-dimmed hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Clock size={14} /> Multi-Day Range
+                  </button>
                 </div>
               </div>
+
+              {/* Date & Time Inputs */}
+              {!isMultiDayEvent ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
+                      Event Date {editingEvent && eventForm.date && <span className="normal-case text-primary font-normal">(current: {eventForm.date})</span>}
+                    </label>
+                    <input
+                      type="date"
+                      required={!editingEvent}
+                      className="bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary [color-scheme:dark] cursor-pointer"
+                      value={eventStartDateRaw}
+                      onChange={(e) => {
+                        const raw = e.target.value; // YYYY-MM-DD
+                        setEventStartDateRaw(raw);
+                        if (raw) {
+                          const dateObj = new Date(raw + 'T00:00:00');
+                          const fmt = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                          const my = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                          setEventForm(prev => ({
+                            ...prev,
+                            date: fmt || prev.date,
+                            endDate: undefined,
+                            monthYear: prev.monthYear || my
+                          }));
+                        }
+                      }}
+                    />
+                    {eventStartDateRaw && eventForm.date && (
+                      <span className="text-xs text-primary mt-0.5">{eventForm.date}</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
+                      Time {editingEvent && eventForm.time && <span className="normal-case text-primary font-normal">(current: {eventForm.time})</span>}
+                    </label>
+                    <input
+                      type="time"
+                      className="bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary [color-scheme:dark] cursor-pointer"
+                      value={eventTimeRaw}
+                      onChange={(e) => {
+                        const raw = e.target.value; // HH:MM
+                        setEventTimeRaw(raw);
+                        if (!raw) { setEventForm(prev => ({ ...prev, time: '' })); return; }
+                        const [h, m] = raw.split(':').map(Number);
+                        const ampm = h >= 12 ? 'PM' : 'AM';
+                        const h12 = h % 12 || 12;
+                        setEventForm(prev => ({ ...prev, time: `${h12}:${String(m).padStart(2, '0')} ${ampm}` }));
+                      }}
+                    />
+                    {eventForm.time && (
+                      <span className="text-xs text-primary mt-0.5">{eventForm.time}</span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3.5 p-4 bg-white/5 border border-white/10 rounded-xl">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
+                        Start Date {editingEvent && <span className="normal-case text-primary font-normal">(current: {eventForm.date})</span>}
+                      </label>
+                      <input
+                        type="date"
+                        required={!editingEvent}
+                        className="bg-black/30 border border-white/15 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary [color-scheme:dark] cursor-pointer"
+                        value={eventStartDateRaw}
+                        onChange={(e) => {
+                          const startRaw = e.target.value;
+                          setEventStartDateRaw(startRaw);
+                          if (startRaw) {
+                            const formattedRange = formatEventDateRange(startRaw, eventEndDateRaw || startRaw);
+                            const my = new Date(startRaw + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                            setEventForm(prev => ({
+                              ...prev,
+                              date: formattedRange,
+                              endDate: eventEndDateRaw || startRaw,
+                              monthYear: prev.monthYear || my
+                            }));
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        min={eventStartDateRaw}
+                        required={!editingEvent}
+                        className="bg-black/30 border border-white/15 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary [color-scheme:dark] cursor-pointer"
+                        value={eventEndDateRaw}
+                        onChange={(e) => {
+                          const endRaw = e.target.value;
+                          setEventEndDateRaw(endRaw);
+                          if (eventStartDateRaw && endRaw) {
+                            const formattedRange = formatEventDateRange(eventStartDateRaw, endRaw);
+                            setEventForm(prev => ({
+                              ...prev,
+                              date: formattedRange,
+                              endDate: endRaw
+                            }));
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
+                      Daily Time / Schedule Note (e.g. 9:00 AM Daily)
+                    </label>
+                    <input
+                      type="text"
+                      className="bg-black/30 border border-white/15 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-primary"
+                      value={eventForm.time}
+                      onChange={(e) => setEventForm(prev => ({ ...prev, time: e.target.value }))}
+                      placeholder="e.g. 9:00 AM - 5:00 PM Daily"
+                    />
+                  </div>
+
+                  {eventForm.date && (
+                    <div className="p-3 bg-primary/20 border border-primary/40 rounded-xl text-xs text-purple-100 flex items-center justify-between">
+                      <span>🗓 Date Display: <strong className="text-white ml-1">{eventForm.date}</strong></span>
+                      {eventStartDateRaw && eventEndDateRaw && (
+                        <span className="bg-primary/40 px-2 py-0.5 rounded text-[11px] font-semibold text-white">
+                          {Math.max(1, Math.round((new Date(eventEndDateRaw).getTime() - new Date(eventStartDateRaw).getTime()) / (1000 * 60 * 60 * 24)) + 1)} Days Duration
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <p className="text-[11px] text-text-dimmed -mt-1 leading-tight">
+                💡 Multi-day events stay active throughout their entire duration and automatically move to Past Events after the final day concludes.
+              </p>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-text-dimmed uppercase tracking-wider">
@@ -1560,19 +1731,19 @@ export default function Admin() {
                 </div>
               )}
 
-              <div className="flex justify-end gap-3 mt-2">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 mt-4">
                 <button
                   type="button"
                   onClick={() => { setIsEventModalOpen(false); setModalError(''); setModalSuccess(''); }}
                   disabled={modalSubmitting}
-                  className="px-5 py-2.5 border border-white/10 rounded-full text-sm text-text-dimmed hover:text-white transition-all cursor-pointer disabled:opacity-40"
+                  className="w-full sm:w-auto px-5 py-2.5 border border-white/10 rounded-full text-sm text-text-dimmed hover:text-white transition-all cursor-pointer disabled:opacity-40 text-center"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={modalSubmitting}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-hover rounded-full text-sm font-semibold text-white shadow-lg transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-hover rounded-full text-sm font-semibold text-white shadow-lg transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed text-center"
                 >
                   {modalSubmitting && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                   {modalSubmitting ? 'Saving...' : (editingEvent ? 'Update Event' : 'Save Event')}

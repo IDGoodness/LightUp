@@ -1,5 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
-import { upcomingEventsData, pastEventsData, sermonsData, galleryData } from '../data/churchData';
+import { 
+  upcomingEventsData, 
+  pastEventsData, 
+  sermonsData, 
+  galleryData,
+  isEventUpcoming,
+  isEventExpired,
+  formatEventMonthYear
+} from '../data/churchData';
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import homepageImg from '../assets/homepage.jpg';
 import sermonImg from '../assets/sermonImg.jpg';
@@ -161,6 +169,7 @@ export const dbService = {
 
   // --- EVENTS ---
   async getEvents(): Promise<ChurchEvent[]> {
+    let rawEvents: ChurchEvent[] = [];
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase
@@ -168,7 +177,7 @@ export const dbService = {
           .select('*')
           .order('created_at', { ascending: false });
         if (!error && data && data.length > 0) {
-          return data.map(e => ({
+          rawEvents = data.map(e => ({
             id: e.id,
             title: e.title,
             date: e.date,
@@ -185,14 +194,31 @@ export const dbService = {
         console.error('Error fetching events from Supabase:', err);
       }
     }
-    const events = localStorage.getItem(KEYS.EVENTS);
-    const parsed = events ? JSON.parse(events) : [];
-    return parsed.length > 0 ? parsed : [...upcomingEventsData, ...pastEventsData];
+
+    if (rawEvents.length === 0) {
+      const stored = localStorage.getItem(KEYS.EVENTS);
+      const parsed = stored ? JSON.parse(stored) : [];
+      rawEvents = parsed.length > 0 ? parsed : [...upcomingEventsData, ...pastEventsData];
+    }
+
+    // Process event lifecycle: automatically move past dated events to Past Events
+    const processedEvents = rawEvents.map(event => {
+      if (event.isUpcoming && isEventExpired(event)) {
+        return {
+          ...event,
+          isUpcoming: false,
+          monthYear: formatEventMonthYear(event)
+        };
+      }
+      return event;
+    });
+
+    return processedEvents;
   },
 
   async getUpcomingEvents(): Promise<ChurchEvent[]> {
     const all = await this.getEvents();
-    return all.filter(e => e.isUpcoming);
+    return all.filter(isEventUpcoming);
   },
 
   async createEvent(event: Omit<ChurchEvent, 'id'>): Promise<ChurchEvent> {

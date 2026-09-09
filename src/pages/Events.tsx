@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, MapPin, Play, X, Check, ArrowRight, User, Mail, Sparkles, Clock, Info } from 'lucide-react';
 import eventImg from '../assets/events.jpg';
 import { dbService } from '../services/db';
+import { isEventUpcoming, formatEventMonthYear } from '../data/churchData';
 import type { ChurchEvent } from '../data/churchData';
 import SEO from '../components/SEO';
 
@@ -119,8 +120,8 @@ export default function Events() {
   const btnPrimaryClass = "inline-flex items-center justify-center px-6 py-2.5 rounded-full font-heading font-semibold cursor-pointer transition-all duration-300 text-[0.95rem] gap-2 bg-primary text-text-white shadow-[0_4px_12px_rgba(140,82,255,0.3)] hover:bg-primary-hover hover:shadow-[0_6px_18px_rgba(140,82,255,0.5)] hover:-translate-y-[2px] active:translate-y-0";
   const btnSecondaryClass = "inline-flex items-center justify-center px-6 py-2.5 rounded-full font-heading font-semibold cursor-pointer transition-all duration-300 text-[0.95rem] gap-2 bg-transparent text-text-white border border-white/60 hover:bg-white/10 hover:-translate-y-[2px] active:translate-y-0";
 
-  const upcomingEvents = eventsList.filter(e => e.isUpcoming);
-  const pastEvents = eventsList.filter(e => !e.isUpcoming);
+  const upcomingEvents = eventsList.filter(isEventUpcoming);
+  const pastEvents = eventsList.filter(e => !isEventUpcoming(e));
 
   return (
     <div className="events-page">
@@ -283,7 +284,7 @@ export default function Events() {
                   <div className="p-6 md:p-8 flex flex-col md:flex-row flex-1 justify-between items-start md:items-center gap-6 md:gap-8">
                     <div className="max-w-[500px]">
                       <div className="font-heading font-bold text-xs text-accent-orange mb-2 uppercase tracking-wider">
-                        <span>{event.monthYear}</span>
+                        <span>{event.monthYear || formatEventMonthYear(event) || event.date}</span>
                       </div>
                       <h3 className="text-2xl font-heading font-bold text-text-white mb-2">
                         {event.title}
@@ -300,9 +301,9 @@ export default function Events() {
                         <button
                           type="button"
                           onClick={() => openVideo(event.videoUrl!)}
-                          className={`${btnSecondaryClass} w-full flex gap-2 border-white/20 text-xs`}
+                          className={`${btnSecondaryClass} w-full flex gap-2 h-14 border-white/20 text-xs`}
                         >
-                          <Play size={14} fill="currentColor" /> View Highlights
+                          <Play size={14} fill="currentColor" /> View
                         </button>
                       )}
                     </div>

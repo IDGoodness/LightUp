@@ -106,9 +106,8 @@ export default function About() {
                 OUR VISION
               </h3>
               <p className="text-white/95 text-[0.95rem] md:text-[1rem] leading-relaxed">
-                We believe in the Gospel, the finished work of Christ, and it is
-                from this understanding that we live, walk, and express our
-                faith.
+                We envision all men walking in the light till the whole world is
+                full of light.
               </p>
             </div>
 
@@ -136,9 +135,32 @@ export default function About() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-10 lg:gap-16 mt-16 max-w-[1100px] mx-auto animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-12 lg:gap-14 max-w-[920px] mx-auto animate-fade-in">
             {/* Card 1 */}
             <div className="relative group min-h-[300px]">
+              {/* Rotated Orange Background Card */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
+
+              {/* Front Text Card */}
+              <div className="relative bg-[#090212] border border-white/10 rounded-[2rem] p-8 pt-14 flex flex-col items-center justify-center text-center h-full z-10 shadow-[0_15px_35px_rgba(0,0,0,0.6)]">
+                <img
+                  src={pinImg}
+                  className="absolute top-[-30px] w-16 h-16 md:w-20 md:h-20 object-contain select-none pointer-events-none"
+                  alt="Pin decoration"
+                />
+                <p className="text-text-white text-[0.95rem] md:text-[1rem] leading-relaxed font-body">
+                  We believe in the Gospel, the finished work of Christ, and it
+                  is from this understanding that we live, walk, and express our
+                  faith
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div
+              className="relative group min-h-[300px]"
+              style={{ animationDelay: "0.15s" }}
+            >
               {/* Rotated Orange Background Card */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
 
@@ -157,10 +179,10 @@ export default function About() {
               </div>
             </div>
 
-            {/* Card 2 */}
+            {/* Card 3 */}
             <div
               className="relative group min-h-[300px]"
-              style={{ animationDelay: "0.2s" }}
+              style={{ animationDelay: "0.3s" }}
             >
               {/* Rotated Orange Background Card */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
@@ -180,10 +202,10 @@ export default function About() {
               </div>
             </div>
 
-            {/* Card 3 */}
+            {/* Card 4 */}
             <div
               className="relative group min-h-[300px]"
-              style={{ animationDelay: "0.4s" }}
+              style={{ animationDelay: "0.45s" }}
             >
               {/* Rotated Orange Background Card */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffa800] to-[#ff8c00] rounded-[2rem] -rotate-[3deg] z-0 transition-transform duration-300 group-hover:rotate-[-1deg] shadow-[0_10px_25px_rgba(255,168,0,0.15)]"></div>
