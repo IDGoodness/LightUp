@@ -139,7 +139,7 @@ function parseSingleDateString(s: string): Date | null {
  * Parses an event date or date-range into the final Date object (end of event).
  * Supports both single dates and multi-day spans (e.g. "Thu, 10 - Sun, 13 Sep 2026").
  */
-export function parseEventDate(dateStr?: string, timeStr?: string, endDateStr?: string): Date | null {
+export function parseEventDate(dateStr?: string, _timeStr?: string, endDateStr?: string): Date | null {
   if (endDateStr && !isEventRecurring(endDateStr)) {
     const parsedEnd = parseSingleDateString(endDateStr);
     if (parsedEnd) return parsedEnd;

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { dbService } from '../services/db';
 import type { ContactSubmission, NewsletterSubscriber, EventRegistration } from '../services/db';
-import { isEventRecurring, isEventExpired, isEventUpcoming, formatEventMonthYear, formatEventDateRange } from '../data/churchData';
+import { isEventRecurring, isEventUpcoming, formatEventMonthYear, formatEventDateRange } from '../data/churchData';
 import type { Sermon, ChurchEvent, GalleryItem } from '../data/churchData';
 import homepageImg from '../assets/homepage.jpg';
 import logo from '../assets/logo.png';
@@ -51,9 +51,21 @@ export default function Admin() {
   // Form Modals / Edit States
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<ChurchEvent | null>(null);
-  const [eventForm, setEventForm] = useState({
+  const [eventForm, setEventForm] = useState<{
+    title: string;
+    date: string;
+    endDate?: string;
+    time: string;
+    location: string;
+    description: string;
+    image: string;
+    isUpcoming: boolean;
+    monthYear: string;
+    videoUrl: string;
+  }>({
     title: '',
     date: '',
+    endDate: '',
     time: '',
     location: '',
     description: '',
@@ -86,7 +98,6 @@ export default function Admin() {
   const [isMultiDayEvent, setIsMultiDayEvent] = useState<boolean>(false);
   const [eventStartDateRaw, setEventStartDateRaw] = useState<string>(''); // YYYY-MM-DD for start date
   const [eventEndDateRaw, setEventEndDateRaw] = useState<string>('');     // YYYY-MM-DD for end date
-  const [eventDateRaw, setEventDateRaw] = useState<string>('');           // YYYY-MM-DD for single date
   const [eventTimeRaw, setEventTimeRaw] = useState<string>('');           // HH:MM for time picker
   const eventImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -180,7 +191,6 @@ export default function Admin() {
     setIsMultiDayEvent(false);
     setEventStartDateRaw('');
     setEventEndDateRaw('');
-    setEventDateRaw('');
     setEventTimeRaw('');
     setEventForm({
       title: '',
@@ -204,7 +214,6 @@ export default function Admin() {
     setIsMultiDayEvent(isMulti);
     setEventStartDateRaw('');
     setEventEndDateRaw(event.endDate || '');
-    setEventDateRaw('');
     setEventTimeRaw('');
     setEventForm({
       title: event.title,
