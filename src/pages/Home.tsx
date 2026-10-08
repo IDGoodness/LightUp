@@ -258,8 +258,7 @@ export default function Home() {
               shine Christ's light in their societies.
             </p>
             <p className="text-text-muted text-[1.05rem] leading-relaxed">
-              Whether through prayer meditation, missions, or community
-              development outposts, we provide the platform for you to grow
+              Whether through prayer and meditation, missions, we provide the platform for you to grow
               spiritually and serve purposefully.
             </p>
             <Link

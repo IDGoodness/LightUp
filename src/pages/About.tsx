@@ -106,8 +106,9 @@ export default function About() {
                 OUR VISION
               </h3>
               <p className="text-white/95 text-[0.95rem] md:text-[1rem] leading-relaxed">
-                We envision all men walking in the light till the whole world is
-                full of light.
+                We envision a generation where all men encounter Christ, walk
+                boldly in His light, and become unashamed carriers of His light
+                until the whole world is full of His light.
               </p>
             </div>
 
